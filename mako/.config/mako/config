@@ -1,0 +1,26 @@
+# === Appearance ===
+font=JetbrainsMonoNL Nerd Font Mono 10
+background-color=#1e1e2eD0
+text-color=#ffffff
+border-color=#89b4fa
+progress-color=#89b4fa
+border-size=2
+border-radius=12
+
+# === Layout ===
+width=300
+margin=10,20,0
+padding=10
+text-alignment=left
+anchor=top-right
+layer=overlay
+
+# === Behavior ===
+default-timeout=5000
+max-visible=3
+
+# === Urgency overrides ===
+[urgency=high]
+default-timeout=10000
+border-color=#f38ba8
+

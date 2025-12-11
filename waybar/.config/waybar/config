@@ -1,0 +1,79 @@
+{
+  // "layer": "top",
+  "height": 39,
+  "spacing": 5,
+  // Choose the order of the modules
+  "modules-left": ["image", "niri/workspaces" ],
+  "modules-center": [ "clock", "tray" ],
+  "modules-right": [
+    "bluetooth",
+    "pulseaudio",
+    "network",
+    "battery",
+  ],
+  "niri/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "urgent": "",
+      "active": "",
+      "default": ""
+    },
+    "sort-by-number": true,
+  },
+  "tray": {
+    "spacing": 10
+  },
+  "clock": {
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "format": "󰥔 {0:%H:%M}   {0:%d-%m} |"
+  },
+  "battery": {
+    "states": {
+      "warning": 40
+    },
+    "format": "{capacity}% {icon}",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "format-charging": "󰂄 {capacity}%",
+    "format-warning": "󰂃 {capacity}%",
+    "tooltip-format": "{capacity}%"
+  },
+  "network": {
+    "format-wifi": "{essid} ({signalStrength}%)",
+    "format-ethernet": "",
+    "format-disconnected": "",
+    "tooltip-format": "Connected to {essid}",
+    "tooltip-format-ethernet": "{ifname} ",
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " ",
+    "format-icons": {
+      "default": [" ", " ", " "]
+    },
+    "tooltip-format": "{volume}% volume",
+  },
+  "image": {
+    "path": "/home/jonas/.config/waybar/nix.svg",
+    "size": 20,
+    "interval": 5,
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-disabled": "",
+    "format-connected": " {num_connections} connected",
+    "on-click": "blueman-manager",
+  },
+
+}
+
+// vim: ft=jsonc
