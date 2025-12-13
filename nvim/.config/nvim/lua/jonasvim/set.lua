@@ -41,7 +41,7 @@ vim.opt.updatetime = 10
 -- vim.opt.colorcolumn = '80'
 
 -- Minimal statusline - just filename
-vim.opt.statusline = ' %t %m%='
+vim.opt.statusline = ' %<%{fnamemodify(expand("%"), ":h:t")}/%t %m%='
 
 -- File-specific indentation settings
 vim.api.nvim_create_autocmd('FileType', {
