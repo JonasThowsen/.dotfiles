@@ -59,6 +59,5 @@ vim.keymap.set('n', 'Q', '<nop>')
 
 vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set('v', '<leader>s', [[y:%s/\V<C-r>"/<C-r>"/gI<Left><Left><Left>]])
-vim.keymap.set('n', '<leader>xx', '<cmd>!chmod +x %<CR>', { silent = true })
 
 vim.keymap.set('n', '<leader>mr', '<cmd>CellularAutomaton make_it_rain<CR>')
