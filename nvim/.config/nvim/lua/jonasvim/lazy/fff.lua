@@ -4,8 +4,8 @@ return {
   build = "nix run .#release",
   opts = {
     debug = {
-      enabled = true,
-      show_scores = true,
+      enabled = false,
+      show_scores = false,
     },
     layout = {
       height = 0.9,
