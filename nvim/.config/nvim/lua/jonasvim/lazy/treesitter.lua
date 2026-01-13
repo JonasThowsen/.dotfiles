@@ -21,6 +21,11 @@ return {
         'markdown_inline',
         'templ',
         'python',
+        -- STA100
+        'markdown_inline',
+        'r',
+        'rnoweb',
+        'yaml',
       },
 
       -- Install parsers synchronously (only applied to `ensure_installed`)
