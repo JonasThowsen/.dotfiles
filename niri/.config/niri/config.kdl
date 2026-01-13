@@ -14,7 +14,7 @@ workspace "7"
 workspace "8"
 
 cursor {
-  xcursor-theme "Nordzy-catppuccin-mocha-dark"
+  xcursor-theme "Adwaita"
   xcursor-size 24
 }
 
