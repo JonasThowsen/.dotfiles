@@ -3,6 +3,7 @@ return {
   name = 'fff.nvim',
   build = "nix run .#release",
   opts = {
+    prompt = 'λ ',
     debug = {
       enabled = false,
       show_scores = false,
