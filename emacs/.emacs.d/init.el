@@ -1,10 +1,19 @@
+;;; Helper functions
+(defun open-file-in-new-tab (file)
+  "Open FILE in a new tab."
+  (interactive "fFile: ")
+  (tab-bar-new-tab)
+  (find-file file))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(setq inhibit-startup-message t)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 (setq make-backup-files nil)
+(global-auto-revert-mode 1)
 
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
@@ -26,6 +35,9 @@
 
 (evil-set-undo-system 'undo-redo)
 
+;; Evil packages
+(global-evil-surround-mode 1)
+
 ;; General evil stuff
 (general-evil-setup t)
 
@@ -40,3 +52,52 @@
 
 (my-leader
   "a" 'avy-goto-char-timer)
+
+(my-leader
+  "ff" 'affe-find
+  "fs" 'affe-grep
+  "fi" 'consult-line)
+
+;;; Vertico
+(require 'vertico)
+(vertico-mode)
+
+;; Recommended to save across Emacs restarts
+(savehist-mode)
+
+;;; Orderless
+(require 'orderless)
+(setq completion-styles '(orderless basic))
+(setq completion-category-overrides '((file (styles partial-completion))))
+(setq completion-category-defaults nil)
+(setq completion-pcm-leading-wildcard t)
+
+;;; Embark
+(require 'embark)
+(require 'embark-consult)
+(global-set-key (kbd "C-.") #'embark-act)
+
+(defun my-embark-open-in-new-tab ()
+  "Open current embark target in a new tab."
+  (interactive)
+  (let ((target (car (embark--targets))))
+    (embark--act #'open-file-in-new-tab target t)))
+
+(defun my-embark-select-and-next ()
+  "Select current candidate and move to next."
+  (interactive)
+  (embark-select)
+  (vertico-next))
+
+(with-eval-after-load 'embark
+  (define-key minibuffer-local-map (kbd "C-.") #'embark-act)
+  (define-key minibuffer-local-completion-map (kbd "C-.") #'embark-act)
+  (define-key embark-file-map (kbd "C-t") #'open-file-in-new-tab))
+
+(with-eval-after-load 'vertico
+  (define-key vertico-map (kbd "C-t") #'my-embark-open-in-new-tab)
+  (define-key vertico-map (kbd "C-SPC") #'my-embark-select-and-next)
+  (define-key vertico-map (kbd "C-q") #'embark-export))
+
+;;; Wgrep
+(require 'wgrep)
