@@ -5,6 +5,11 @@
   (tab-bar-new-tab)
   (find-file file))
 
+(defun open-eshell-in-split ()
+  (interactive)
+  (evil-window-split)
+  (eshell))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -57,6 +62,9 @@
   "ff" 'affe-find
   "fs" 'affe-grep
   "fi" 'consult-line)
+
+(my-leader
+  "t" 'open-eshell-in-split)
 
 ;;; Vertico
 (require 'vertico)
