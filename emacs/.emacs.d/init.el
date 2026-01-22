@@ -119,6 +119,9 @@
   (define-key vertico-map (kbd "C-SPC") #'my-embark-select-and-next)
   (define-key vertico-map (kbd "C-q") #'embark-export))
 
+(require 'marginalia)
+(marginalia-mode)
+
 ;;; Wgrep
 (require 'wgrep)
 
