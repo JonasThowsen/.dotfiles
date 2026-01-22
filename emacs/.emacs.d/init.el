@@ -28,6 +28,15 @@
 (load-theme 'rosebones t)
 (set-frame-font "0xProto-16" t t)
 
+;;; Org mode
+(require 'org)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (R . t)
+   ))
+
 ;;; General
 (require 'general)
 
@@ -143,4 +152,5 @@
   "e" 'wgrep-change-to-wgrep-mode
   "d" 'wgrep-abort-changes)
 
+(require 'envrc)
 (envrc-global-mode)
