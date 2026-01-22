@@ -124,6 +124,7 @@
 
 ;;; Wgrep
 (require 'wgrep)
+(setq wgrep-auto-save-buffer t)
 
 (defun open-grep-goto-error-new-tab ()
   "Open grep result in a new tab."
