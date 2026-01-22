@@ -2,18 +2,13 @@
 (defun open-file-in-new-tab (file)
   "Open FILE in a new tab."
   (interactive "fFile: ")
-  (tab-bar-new-tab-to)
+  (tab-bar-new-tab)
   (find-file file))
 
 (defun open-eshell-in-split ()
   (interactive)
   (evil-window-split)
   (eshell))
-
-(defun open-in-new-tab ()
-  "Open whatever in new tab."
-  (interactive)
-  (tab-bar-new-tab-to))
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -70,21 +65,18 @@
 (my-leader
   "t" 'open-eshell-in-split)
 
-(my-leader
-  "o" 'open-in-new-tab)
-
 ;;; Magit
-(defun visit-thing-magit-in-new-tab ()
+(defun magit-diff-visit-file-in-new-tab ()
   (interactive)
-  (tab-bar-new-tab-to)
-  (call-interactively (key-binding (kbd "RET"))))
+  (tab-bar-new-tab)
+  (magit-diff-visit-file))
 
 (my-leader
   "gg" 'magit)
 
 (my-leader
   :keymaps 'magit-mode-map
-  "o" 'visit-thing-magit-in-new-tab)
+  "o" 'magit-diff-visit-file-in-new-tab)
 
 ;;; Vertico
 (require 'vertico)
@@ -133,7 +125,7 @@
 (defun open-grep-goto-error-new-tab ()
   "Open grep result in a new tab."
   (interactive)
-  (tab-bar-new-tab-to)
+  (tab-bar-new-tab)
   (compile-goto-error)
   (delete-other-windows))
 
