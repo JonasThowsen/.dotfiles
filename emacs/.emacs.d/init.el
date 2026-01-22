@@ -2,7 +2,7 @@
 (defun open-file-in-new-tab (file)
   "Open FILE in a new tab."
   (interactive "fFile: ")
-  (tab-bar-new-tab)
+  (tab-bar-new-tab-to)
   (find-file file))
 
 (defun open-eshell-in-split ()
@@ -10,10 +10,16 @@
   (evil-window-split)
   (eshell))
 
+(defun open-in-new-tab ()
+  "Open whatever in new tab."
+  (interactive)
+  (tab-bar-new-tab-to))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t)
+(setq ring-bell-function 'ignore)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
@@ -25,7 +31,7 @@
 
 ;;; Theme and font
 (load-theme 'rosebones t)
-(set-frame-font "0xProto-14" t t)
+(set-frame-font "0xProto-16" t t)
 
 ;;; General
 (require 'general)
@@ -53,9 +59,6 @@
   :global-prefix "C-SPC")
 
 (my-leader
-  "gg" 'magit)
-
-(my-leader
   "a" 'avy-goto-char-timer)
 
 (my-leader
@@ -65,6 +68,22 @@
 
 (my-leader
   "t" 'open-eshell-in-split)
+
+(my-leader
+  "o" 'open-in-new-tab)
+
+;;; Magit
+(defun visit-thing-magit-in-new-tab ()
+  (interactive)
+  (tab-bar-new-tab-to)
+  (call-interactively (key-binding (kbd "RET"))))
+
+(my-leader
+  "gg" 'magit)
+
+(my-leader
+  :keymaps 'magit-mode-map
+  "o" 'visit-thing-magit-in-new-tab)
 
 ;;; Vertico
 (require 'vertico)
@@ -109,3 +128,16 @@
 
 ;;; Wgrep
 (require 'wgrep)
+
+(defun open-grep-goto-error-new-tab ()
+  "Open grep result in a new tab."
+  (interactive)
+  (tab-bar-new-tab-to)
+  (compile-goto-error)
+  (delete-other-windows))
+
+(my-leader
+  :keymaps 'grep-mode-map
+  "o" 'open-grep-goto-error-new-tab
+  "e" 'wgrep-change-to-wgrep-mode
+  "d" 'wgrep-abort-changes)

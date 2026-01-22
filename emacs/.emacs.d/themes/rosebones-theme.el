@@ -65,6 +65,18 @@
    `(font-lock-delimiter-face ((t (:foreground "#807890"))))
    `(font-lock-warning-face ((t (:foreground ,warn :weight bold))))
 
+   ;; Tree-sitter faces (Emacs 29+) - keeping the grayscale aesthetic
+   `(font-lock-function-call-face ((t (:foreground "#D8D0D8"))))
+   `(font-lock-property-use-face ((t (:foreground "#C0B8C0"))))
+   `(font-lock-number-face ((t (:foreground "#B8B0B8"))))
+   `(font-lock-operator-face ((t (:foreground "#9890A0"))))
+   `(font-lock-bracket-face ((t (:foreground "#807890"))))
+   `(font-lock-punctuation-face ((t (:foreground "#807890"))))
+   `(font-lock-misc-punctuation-face ((t (:foreground "#807890"))))
+   `(font-lock-escape-face ((t (:foreground "#A8A0A8"))))
+   `(font-lock-regexp-face ((t (:foreground "#A8A0A8"))))
+   `(font-lock-property-name-face ((t (:foreground "#C8C0C8"))))
+
    ;; Errors/warnings (built-in faces used all over Emacs)
    `(error   ((t (:foreground ,error))))
    `(warning ((t (:foreground ,warn))))
