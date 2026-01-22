@@ -119,6 +119,19 @@
   (embark-select)
   (vertico-next))
 
+(defun find-file-h (target)
+  (split-window-below)
+  (other-window 1)
+  (find-file target))
+
+(defun split-vertical-current-completion-candidate ()
+  (interactive)
+  (embark--act #'find-file-other-window (car (embark--targets)) t))
+
+(defun split-horizontal-current-completion-candidate ()
+  (interactive)
+  (embark--act #'+embark:find-file-h (car (embark--targets)) t))
+
 (with-eval-after-load 'embark
   (define-key minibuffer-local-map (kbd "C-.") #'embark-act)
   (define-key minibuffer-local-completion-map (kbd "C-.") #'embark-act)
@@ -127,7 +140,9 @@
 (with-eval-after-load 'vertico
   (define-key vertico-map (kbd "C-t") #'my-embark-open-in-new-tab)
   (define-key vertico-map (kbd "C-SPC") #'my-embark-select-and-next)
-  (define-key vertico-map (kbd "C-q") #'embark-export))
+  (define-key vertico-map (kbd "C-q") #'embark-export)
+  (define-key vertico-map (kbd "C-v") #'split-vertical-current-completion-candidate)
+  (define-key vertico-map (kbd "C-s") #'split-horizontal-current-completion-candidate))
 
 (require 'marginalia)
 (marginalia-mode)
