@@ -142,3 +142,5 @@
   "o" 'open-grep-goto-error-new-tab
   "e" 'wgrep-change-to-wgrep-mode
   "d" 'wgrep-abort-changes)
+
+(envrc-global-mode)
