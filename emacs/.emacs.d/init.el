@@ -169,4 +169,20 @@
 (require 'envrc)
 (envrc-global-mode)
 
+;;; Tree-sitter mode associations
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.exs\\'" . elixir-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.heex\\'" . heex-ts-mode))
+
+;; Remap built-in modes to their tree-sitter equivalents
+(setq major-mode-remap-alist
+      '((python-mode . python-ts-mode)
+	(javascript-mode . js-ts-mode)
+	(typescript-mode . typescript-ts-mode)
+	(json-mode . json-ts-mode)
+	(css-mode . css-ts-mode)
+	(html-mode . html-ts-mode)))
+
+;;; Multi-cursor
 (global-evil-mc-mode 1)
