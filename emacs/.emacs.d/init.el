@@ -16,8 +16,6 @@
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-
 (setq make-backup-files nil)
 (global-auto-revert-mode 1)
 
@@ -25,8 +23,9 @@
 (setq display-line-numbers-type 'relative)
 
 ;;; Theme and font
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'rosebones t)
-(set-frame-font "0xProto-16" t t)
+(set-frame-font "0xProto-18" t t)
 
 ;;; Org mode
 (require 'org)
@@ -66,11 +65,11 @@
   "a" 'avy-goto-char-timer)
 
 (my-leader
-  "ff" 'affe-find
-  "fp" 'project-find-file
-  "fb" 'consult-buffer
-  "fs" 'affe-grep
-  "fi" 'consult-line)
+  "f" 'affe-find
+  "p" 'project-find-file
+  "b" 'consult-buffer
+  "s" 'affe-grep
+  "i" 'consult-line)
 
 (my-leader
   "t" 'open-eshell-in-split)
