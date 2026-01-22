@@ -169,3 +169,5 @@
 
 (require 'envrc)
 (envrc-global-mode)
+
+(global-evil-mc-mode 1)
