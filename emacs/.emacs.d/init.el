@@ -59,6 +59,7 @@
 (my-leader
   "ff" 'affe-find
   "fp" 'project-find-file
+  "fb" 'consult-buffer
   "fs" 'affe-grep
   "fi" 'consult-line)
 
