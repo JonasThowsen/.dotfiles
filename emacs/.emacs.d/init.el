@@ -123,6 +123,9 @@
 (require 'marginalia)
 (marginalia-mode)
 
+(require 'corfu)
+(global-corfu-mode)
+
 ;;; Wgrep
 (require 'wgrep)
 (setq wgrep-auto-save-buffer t)
