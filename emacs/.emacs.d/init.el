@@ -96,6 +96,10 @@
 (my-leader
   "t" 'open-eshell-in-split)
 
+(my-leader
+  "r" 'query-replace-regexp
+  "R" 'project-query-replace-regexp)
+
 ;;; Magit
 (defun magit-diff-visit-file-in-new-tab ()
   (interactive)
