@@ -1,3 +1,6 @@
+;;; Custom keymaps
+(global-set-key (kbd "C-SPC") 'completion-at-point)
+
 ;;; Wayland clipboard support (for wl-clipboard)
 (setq wl-copy-process nil)
 
