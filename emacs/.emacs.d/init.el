@@ -204,6 +204,7 @@
 	(typescript-mode . typescript-ts-mode)
 	(json-mode . json-ts-mode)
 	(css-mode . css-ts-mode)
+	(csharp-mode . csharp-ts-mode)
 	(html-mode . html-ts-mode)))
 
 ;;; Multi-cursor
