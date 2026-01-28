@@ -41,6 +41,8 @@
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 
+(setq org-agenda-files '("~/org"))
+
 (setq make-backup-files nil)
 (global-auto-revert-mode 1)
 
@@ -49,7 +51,7 @@
 
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'modus-vivendi t)
+(load-theme 'default-black t)
 (set-frame-font "JetBrains Mono Nerd Font-18" t t)
 
 ;;; Org mode
@@ -213,15 +215,3 @@
 	(css-mode . css-ts-mode)
 	(csharp-mode . csharp-ts-mode)
 	(html-mode . html-ts-mode)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files '("~/TODO.org")))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
