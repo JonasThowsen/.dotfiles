@@ -51,7 +51,11 @@
 
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'default-black t)
+(load-theme 'modus-vivendi t)
+;; Favoritt-themes
+;;doom-meltbus
+;;doom-feather-dark
+;;modus-vivendi
 (set-frame-font "JetBrains Mono Nerd Font-18" t t)
 
 ;;; Org mode
