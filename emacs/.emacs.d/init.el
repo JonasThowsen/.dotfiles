@@ -204,6 +204,10 @@
 (require 'envrc)
 (envrc-global-mode)
 
+;;;evil-matchit
+(global-evil-matchit-mode 1)
+(evilmi-load-plugin-rules '(heex-ts-mode) '(template simple html))
+
 ;;; Tree-sitter mode associations
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
