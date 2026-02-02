@@ -96,10 +96,9 @@
   "a" 'avy-goto-char-timer)
 
 (my-leader
-  "f" 'affe-find
-  "p" 'project-find-file
+  "f" 'project-find-file
   "b" 'consult-buffer
-  "s" 'affe-grep
+  "s" 'consult-ripgrep
   "i" 'consult-line)
 
 (my-leader
