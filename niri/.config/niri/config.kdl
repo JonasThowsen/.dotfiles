@@ -389,13 +389,11 @@ binds {
     // shows a list of important hotkeys.
     Mod+Shift+Space { show-hotkey-overlay; }
 
-    Mod+Space { spawn "dms" "launcher"; }
-
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return hotkey-overlay-title="Open a Terminal: foot" { spawn "foot"; }
-    // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Mod+D hotkey-overlay-title="Application Launcher" {
-        spawn "dms" "ipc" "call" "spotlight" "toggle";
+    Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
+    Mod+Space hotkey-overlay-title="Open dms spotlight" { 
+        spawn "dms" "ipc" "call" "spotlight" "open";  
     }
 
     // Mod+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
