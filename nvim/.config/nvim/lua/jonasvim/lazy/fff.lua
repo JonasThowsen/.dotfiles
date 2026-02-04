@@ -16,7 +16,7 @@ return {
   lazy = false,
   keys = {
     {
-      "<leader>ff",
+      "<leader>f",
       function() require('fff').find_files() end,
       desc = 'FFFind files',
     },

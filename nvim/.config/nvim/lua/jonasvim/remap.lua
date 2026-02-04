@@ -11,10 +11,6 @@ vim.keymap.set('n', '<C-Down>', '<C-w>+', { desc = 'Increase split size down' })
 vim.keymap.set('n', '<C-Up>', '<C-w>-', { desc = 'Increase split size up' })
 vim.keymap.set('n', '<C-Right>', '<C-w>>', { desc = 'Increase split size to the right' })
 
--- Prev/Next buffer keymaps
-vim.keymap.set('n', '<S-h>', '<CMD>bp<CR>', { desc = 'Previous buffer' })
-vim.keymap.set('n', '<S-l>', '<CMD>bn<CR>', { desc = 'Next buffer' })
-
 -- Keymap for å åpne oil
 vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
 
@@ -57,7 +53,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>d', '"_d')
 -- disable the Q key
 vim.keymap.set('n', 'Q', '<nop>')
 
-vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set('v', '<leader>s', [[y:%s/\V<C-r>"/<C-r>"/gI<Left><Left><Left>]])
+vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set('v', '<leader>r', [[y:%s/\V<C-r>"/<C-r>"/gI<Left><Left><Left>]])
 
 vim.keymap.set('n', '<leader>mr', '<cmd>CellularAutomaton make_it_rain<CR>')

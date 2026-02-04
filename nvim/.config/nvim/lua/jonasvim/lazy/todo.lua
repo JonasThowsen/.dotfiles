@@ -47,7 +47,7 @@ return {
     -- Search through all project todos with Telescope
     vim.keymap.set(
       'n',
-      '<leader>ft',
+      '<leader>t',
       '<cmd>TodoFzfLua<cr>',
       { desc = 'Search through all project todos' }
     )
