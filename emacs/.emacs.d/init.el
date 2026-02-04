@@ -56,7 +56,7 @@
 ;;doom-meltbus
 ;;doom-feather-dark
 ;;modus-vivendi
-(set-frame-font "JetBrains Mono Nerd Font-18" t t)
+(set-frame-font "Iosevka-18" t t)
 
 ;;; Org mode
 (require 'org)
