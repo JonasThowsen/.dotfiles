@@ -6,7 +6,7 @@ return {
     local config = fzf.config
 
     fzf.setup({
-      'ivy',
+      'fzf-native',
       winopts = {
         fullscreen = true,
         treesitter = {
