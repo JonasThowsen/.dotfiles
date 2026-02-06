@@ -64,3 +64,6 @@ export TERM=tmux-256color
 
 eval "$(zoxide init bash)"
 eval "$(direnv hook bash)"
+
+# opencode
+export PATH=/home/jonas/.opencode/bin:$PATH
