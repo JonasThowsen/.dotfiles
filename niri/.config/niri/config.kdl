@@ -281,7 +281,7 @@ layout {
 // This line starts waybar, a commonly used bar for Wayland compositors.
 spawn-at-startup "waybar"
 
-spawn-at-startup "swaybg" "-i" "/home/jonas/Pictures/ice-background-invaron.jpg"
+spawn-at-startup "swaybg" "-i" "/home/jonas/Pictures/dark-ice-background-invaron.jpg"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -413,8 +413,8 @@ binds {
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+1%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "1%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--device=intel_backlight" "set" "+1%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--device=intel_backlight" "set" "1%-"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
