@@ -1,0 +1,33 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.cwd' | xargs -I{} basename {} | xargs -I{} notify-send 'Claude Code [{}]' 'Claude Code needs your attention'"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.cwd' | xargs -I{} basename {} | xargs -I{} notify-send 'Claude Code [{}]' 'Claude Code needs your permission'"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "csharp-lsp@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": false
+}
