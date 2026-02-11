@@ -207,6 +207,9 @@
 (global-evil-matchit-mode 1)
 (evilmi-load-plugin-rules '(heex-ts-mode) '(template simple html))
 
+;;;evil-commentary
+(evil-commentary-mode)
+
 ;;; Tree-sitter mode associations
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
