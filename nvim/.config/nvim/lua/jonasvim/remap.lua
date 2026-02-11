@@ -1,8 +1,7 @@
 vim.g.mapleader = ' '
 
 -- Neovim builtin terminal keymaps
-vim.keymap.set('n', '<leader>t', [[<CMD>below new<CR><CMD>terminal<CR>]], { desc = 'Open terminal in bottom split' })
-vim.keymap.set('n', '<leader>T', [[<CMD>terminal<CR>]], { desc = 'Open terminal to take up full pane' })
+vim.keymap.set('n', '<leader>T', [[<CMD>below new<CR><CMD>terminal<CR>]], { desc = 'Open terminal in bottom split' })
 vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], { desc = 'Back to normal mode in terminal mode' })
 
 -- Keymaps for resizing av splits
