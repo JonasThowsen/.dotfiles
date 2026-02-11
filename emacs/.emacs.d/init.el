@@ -222,3 +222,8 @@
 	(css-mode . css-ts-mode)
 	(csharp-mode . csharp-ts-mode)
 	(html-mode . html-ts-mode)))
+
+;; Eglot
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("uv" "run" "basedpyright-langserver" "--stdio"))))
