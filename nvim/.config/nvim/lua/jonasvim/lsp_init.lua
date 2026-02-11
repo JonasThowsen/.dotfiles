@@ -1,5 +1,5 @@
-vim.lsp.enable({ 'luals', 'typescript-language-server', 'gopls', 'pylsp', 'csharp-ls', 'ocamllsp', 'rust-analyzer',
-  'astro-language-server' })
+vim.lsp.enable({ 'luals', 'typescript-language-server', 'gopls', 'basedpyright', 'ruff', 'csharp-ls', 'ocamllsp',
+  'rust-analyzer', 'astro-language-server' })
 
 vim.o.completeopt = 'menuone,noinsert,popup'
 
