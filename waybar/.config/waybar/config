@@ -2,9 +2,9 @@
   // "layer": "top",
   "height": 39,
   "spacing": 5,
-  "margin-top": 5,
-  "margin-left": 5,
-  "margin-right": 5,
+  // "margin-top": 5,
+  // "margin-left": 5,
+  // "margin-right": 5,
   // Choose the order of the modules
   "modules-left": ["image", "niri/workspaces" ],
   "modules-center": [ "clock", "tray" ],
