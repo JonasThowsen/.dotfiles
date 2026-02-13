@@ -23,6 +23,9 @@
 (setq interprogram-cut-function 'wl-copy)
 (setq interprogram-paste-function 'wl-paste)
 
+(add-hook 'text-mode-hook #'auto-fill-mode)
+(setq-default fill-column 80)
+
 ;;; Helper functions
 (defun open-file-in-new-tab (file)
   "Open FILE in a new tab."
