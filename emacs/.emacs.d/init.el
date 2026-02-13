@@ -232,4 +232,4 @@
 ;; Eglot
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("uv" "run" "basedpyright-langserver" "--stdio"))))
+               '(python-ts-mode . ("uv" "run" "basedpyright-langserver" "--stdio"))))
