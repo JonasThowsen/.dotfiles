@@ -1,3 +1,5 @@
+set -g fish_key_bindings fish_vi_key_bindings
+
 alias lg lazygit
 alias vim nvim
 zoxide init fish | source
