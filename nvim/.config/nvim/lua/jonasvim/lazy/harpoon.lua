@@ -6,7 +6,24 @@ return {
     local harpoon = require("harpoon")
     harpoon:setup()
 
-    vim.keymap.set("n", "<C-t>", function() harpoon:list():add() end)
+    local function add_file()
+      local list = harpoon:list()
+      local before = list:length()
+      list:add()
+
+      if list:length() > before then
+        vim.notify("Added file to Harpoon", vim.log.levels.INFO)
+      else
+        local current = vim.api.nvim_buf_get_name(0)
+        if current == "" then
+          vim.notify("Save the buffer before adding it to Harpoon", vim.log.levels.WARN)
+        else
+          vim.notify("File is already in Harpoon", vim.log.levels.INFO)
+        end
+      end
+    end
+
+    vim.keymap.set("n", "<C-t>", add_file, { desc = "Harpoon add file" })
     vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
     vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)

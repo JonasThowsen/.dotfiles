@@ -1,3 +1,3 @@
 require('jonasvim')
 
-vim.cmd 'colorscheme rosebones'
+vim.cmd 'colorscheme tokyobones'
