@@ -54,7 +54,7 @@
 
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'modus-vivendi t)
+(load-theme 'doom-one t)
 ;; Favoritt-themes
 ;;doom-meltbus
 ;;doom-feather-dark
@@ -69,6 +69,55 @@
  '((python . t)
    (R . t)
    ))
+
+;; Archive DONE items to Done.org under current date
+(defun my/archive-done-task ()
+  "Archive current task to Done.org under today's date."
+  (interactive)
+  (let* ((archive-file (expand-file-name "~/org/Done.org"))
+         (location (format "%s::" archive-file)))
+    (org-set-property "COMPLETED" (format-time-string "[%Y-%m-%d %a %H:%M]"))
+    (setq org-archive-location location)
+    (org-archive-subtree)))
+
+;; Automatically archive when marked DONE
+(add-hook 'org-after-todo-state-change-hook
+          (lambda ()
+            (when (string= org-state "DONE")
+              (my/archive-done-task))))
+
+(defun my/unarchive-task ()
+  "Move task at point from Done.org back to its original file as TODO."
+  (interactive)
+  (let* ((archive-file (org-entry-get nil "ARCHIVE_FILE"))
+         (archive-olpath (org-entry-get nil "ARCHIVE_OLPATH")))
+    (unless archive-file
+      (user-error "No ARCHIVE_FILE property found — can't determine origin"))
+    ;; Cut the subtree
+    (org-cut-subtree)
+    ;; Remove empty date heading if it has no children left
+    (when (and (org-at-heading-p)
+               (= (org-outline-level) 1)
+               (save-excursion
+                 (let ((end (save-excursion (org-end-of-subtree t t) (point))))
+                   (forward-line 1)
+                   (>= (point) end))))
+      (delete-region (line-beginning-position)
+                     (save-excursion (forward-line 1) (point))))
+    (save-buffer)
+    ;; Go to the original file
+    (find-file archive-file)
+    (goto-char (point-max))
+    ;; Paste the subtree
+    (org-paste-subtree 1)
+    ;; Change state to TODO and clean up archive properties
+    (org-todo "TODO")
+    (dolist (prop '("COMPLETED" "ARCHIVE_TIME" "ARCHIVE_FILE"
+                    "ARCHIVE_OLPATH" "ARCHIVE_CATEGORY"
+                    "ARCHIVE_TODO" "ARCHIVE_ITAGS"))
+      (org-delete-property prop))
+    (save-buffer)
+    (message "Task moved back to %s as TODO" archive-file)))
 
 ;;; General
 (require 'general)
