@@ -1,6 +1,5 @@
 return {
-  dir = '/home/jonas/coding/fff.nvim',
-  name = 'fff.nvim',
+  'dmtrKovalenko/fff.nvim',
   build = "nix run .#release",
   opts = {
     prompt = 'λ ',
