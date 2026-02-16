@@ -267,12 +267,15 @@
 (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.exs\\'" . elixir-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.heex\\'" . heex-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
 ;; Remap built-in modes to their tree-sitter equivalents
 (setq major-mode-remap-alist
       '((python-mode . python-ts-mode)
 	(javascript-mode . js-ts-mode)
 	(typescript-mode . typescript-ts-mode)
+	(tsx-mode . tsx-ts-mode)
 	(json-mode . json-ts-mode)
 	(css-mode . css-ts-mode)
 	(csharp-mode . csharp-ts-mode)
