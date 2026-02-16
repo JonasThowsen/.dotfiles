@@ -19,5 +19,16 @@ return {
       function() require('fff').find_files() end,
       desc = 'FFFind files',
     },
+    {
+      "<leader>s",
+      function()
+        require('fff').live_grep({
+          grep = {
+            modes = { 'fuzzy', 'plain', 'regex' }
+          }
+        })
+      end,
+      desc = 'Live fffuzy grep',
+    }
   }
 }
