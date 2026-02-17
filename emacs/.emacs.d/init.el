@@ -83,7 +83,8 @@
 ;; Automatically archive when marked DONE
 (add-hook 'org-after-todo-state-change-hook
           (lambda ()
-            (when (string= org-state "DONE")
+            (when (and (string= org-state "DONE")
+                       (string= (buffer-file-name) (expand-file-name "~/org/Todo.org")))
               (my/archive-done-task))))
 
 (defun my/unarchive-task ()
