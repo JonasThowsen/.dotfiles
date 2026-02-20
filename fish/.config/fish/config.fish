@@ -1,5 +1,6 @@
 set -g fish_key_bindings fish_vi_key_bindings
 
+alias sirkus "/bin/sirkusagio.fish"
 alias lg lazygit
 alias vim nvim
 alias nd "nix develop --command fish"
