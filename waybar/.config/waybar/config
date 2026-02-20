@@ -1,13 +1,9 @@
 {
-  // "layer": "top",
-  "height": 39,
-  "spacing": 5,
-  // "margin-top": 5,
-  // "margin-left": 5,
-  // "margin-right": 5,
-  // Choose the order of the modules
+  "reload_style_on_change": true,
+  "height": 26,
+  "spacing": 0,
   "modules-left": ["image", "niri/workspaces" ],
-  "modules-center": [ "clock", "tray" ],
+  "modules-center": [ "clock" ],
   "modules-right": [
     "bluetooth",
     "pulseaudio",
@@ -18,6 +14,7 @@
     "format": "{icon}",
     "on-click": "activate",
     "format-icons": {
+      "default": "",
       "1": "1",
       "2": "2",
       "3": "3",
@@ -27,56 +24,68 @@
       "7": "7",
       "8": "8",
       "9": "9",
-      "urgent": "",
-      "active": "",
-      "default": ""
+      "10": "0",
+      "active": "󱓻"
     },
-    "sort-by-number": true,
-  },
-  "tray": {
-    "spacing": 10
   },
   "clock": {
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    "format": "󰥔 {0:%H:%M}   {0:%d-%m}"
+    "format": "{:L%A %H:%M}",
+    "format-alt": "{:L%d %B W%V %Y}",
+    "tooltip": false,
   },
   "battery": {
-    "states": {
-      "warning": 40
-    },
     "format": "{capacity}% {icon}",
-    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-    "format-charging": "󰂄 {capacity}%",
-    "format-warning": "󰂃 {capacity}%",
-    "tooltip-format": "{capacity}%"
+    "format-discharging": "{icon}",
+    "format-charging": "{icon}",
+    "format-plugged": "",
+    "format-icons": {
+      "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    "format-full": "󰂅",
+    "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
+    "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
+    "interval": 5,
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
   },
   "network": {
-    "format-wifi": "{essid} ({signalStrength}%)",
-    "format-ethernet": "",
-    "format-disconnected": "",
-    "tooltip-format": "Connected to {essid}",
-    "tooltip-format-ethernet": "{ifname} ",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "format": "{icon}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰀂",
+    "format-disconnected": "󰤮",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 3,
+    "spacing": 1,
+    "on-click": "foot -e bash -lc 'impala'"
   },
   "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-muted": " ",
+    "format": "{icon}",
+    "tooltip-format": "Playing at {volume}%",
+    "scroll-step": 5,
+    "format-muted": "",
     "format-icons": {
-      "default": [" ", " ", " "]
-    },
-    "tooltip-format": "{volume}% volume",
+      "headphone": "",
+      "headset": "",
+      "default": ["", "", ""]
+    }
   },
   "image": {
     "path": "/home/jonas/.config/waybar/nix.svg",
-    "size": 20,
-    "interval": 5,
   },
   "bluetooth": {
-    "format": " {status}",
-    "format-disabled": "",
-    "format-connected": " {num_connections} connected",
-    "on-click": "blueman-manager",
+    "format": "",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂱",
+    "format-no-controller": "",
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "foot -e bash -lc 'bluetui'"
   },
 
 }
-
-// vim: ft=jsonc
