@@ -1,3 +1,3 @@
 require('jonasvim')
 
-vim.cmd 'colorscheme doom-one'
+vim.cmd 'colorscheme modus_vivendi'
