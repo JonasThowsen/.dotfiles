@@ -1,5 +1,3 @@
-set -g fish_key_bindings fish_vi_key_bindings
-
 alias sirkus "/bin/sirkusagio.fish"
 alias lg lazygit
 alias vim nvim
@@ -9,3 +7,4 @@ zoxide init fish | source
 fish_add_path ~/.local/bin
 fish_add_path ~/.opencode/bin
 fish_add_path ~/.cargo/bin
+fish_add_path ~/.npm-global/bin
