@@ -4,12 +4,15 @@
     "Sanity": {
       "type": "remote",
       "url": "https://mcp.sanity.io",
-      "headers": {
-        "Authorization": "Bearer skhdU8DP6ZPpVrm6DO0l99EY6iu591igKKelc52TsmOpHnjfmW2KdMyyDHaF7WSWi1v2Z5miwj8jKsKIt"
-      }
-    }
-  },
-  "mcp": {
+      "oauth": {}
+    },
+    "fff": {
+      "type": "local",
+      "command": [
+        "fff-mcp"
+      ],
+      "enabled": true
+    },
     "tidewave": {
       "type": "remote",
       "url": "http://localhost:4000/tidewave/mcp",
