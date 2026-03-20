@@ -17,4 +17,5 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = "jonasvim.lazy",
   change_detection = { notify = false },
+  rocks = { hererocks = false },
 })
