@@ -1,6 +1,46 @@
 -- Leader
 vim.g.mapleader = " "
 
+-- Lsp
+vim.lsp.enable({'cssls', 'ts_ls', 'astro', 'html'})
+
+vim.opt.completeopt = { "menuone", "noselect", "popup" }
+local lsp_group = vim.api.nvim_create_augroup("my-lsp-setup", { clear = true })
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = lsp_group,
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then
+      return
+    end
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, args.buf, {
+        autotrigger = true,
+      })
+    end
+    local function trigger_completion()
+      vim.lsp.completion.get()
+    end
+    vim.keymap.set("i", "<C-Space>", trigger_completion, {
+      buffer = args.buf,
+      desc = "LSP completion",
+    })
+  end,
+})
+
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP go to definition' })
+
+vim.keymap.set("n", "K", function()
+  vim.lsp.buf.hover {
+    border = "rounded",
+  }
+end, { desc = "Hover documentation" })
+
+-- Manual keybind to activate LSP completion
+vim.keymap.set('i', '<c-space>', function()
+  vim.lsp.completion.get()
+end)
+
 -- Set
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -46,17 +86,3 @@ vim.keymap.set('n', '<C-Left>', '<C-w><', { desc = 'Increase split size to the l
 vim.keymap.set('n', '<C-Down>', '<C-w>+', { desc = 'Increase split size down' })
 vim.keymap.set('n', '<C-Up>', '<C-w>-', { desc = 'Increase split size up' })
 vim.keymap.set('n', '<C-Right>', '<C-w>>', { desc = 'Increase split size to the right' })
-
--- LSP greier
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP go to definition' })
-
-vim.keymap.set("n", "K", function()
-  vim.lsp.buf.hover {
-    border = "rounded",
-  }
-end, { desc = "Hover documentation" })
-
--- Manual keybind to activate LSP completion
-vim.keymap.set('i', '<c-space>', function()
-  vim.lsp.completion.get()
-end)
