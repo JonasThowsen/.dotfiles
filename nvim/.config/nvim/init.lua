@@ -4,7 +4,7 @@ vim.g.mapleader = " "
 -- Lsp
 vim.lsp.enable({'cssls', 'ts_ls', 'astro', 'html'})
 
-vim.opt.completeopt = { "menuone", "noselect", "popup" }
+vim.opt.completeopt = { "menuone", "noinsert", "popup" }
 local lsp_group = vim.api.nvim_create_augroup("my-lsp-setup", { clear = true })
 vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_group,
@@ -25,6 +25,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       buffer = args.buf,
       desc = "LSP completion",
     })
+    vim.keymap.set("i", "<C-@>", trigger_completion, {
+      buffer = args.buf,
+      desc = "LSP completion",
+    })
   end,
 })
 
@@ -35,11 +39,6 @@ vim.keymap.set("n", "K", function()
     border = "rounded",
   }
 end, { desc = "Hover documentation" })
-
--- Manual keybind to activate LSP completion
-vim.keymap.set('i', '<c-space>', function()
-  vim.lsp.completion.get()
-end)
 
 -- Set
 vim.opt.nu = true
