@@ -1,7 +1,7 @@
 {
   "plugins": {
     "fff.nvim": {
-      "rev": "29e6480ea011351fe468fdec3ee01a4ff1d760cf",
+      "rev": "1c2c0633cdb933a9b4111d9e6dfa4a476a35ff9f",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "flash.nvim": {
@@ -9,7 +9,7 @@
       "src": "https://github.com/folke/flash.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "9ccd58a7949091c0cc2777d4e92a45a209c808c1",
+      "rev": "fb5fa30626ae10f7f79f740059d3769993936ecb",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
