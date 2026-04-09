@@ -38,6 +38,14 @@
   (evil-window-split)
   (eshell))
 
+(defun lightmode ()
+  (interactive)
+  (load-theme 'modus-operandi t))
+
+(defun darkmode ()
+  (interactive)
+  (load-theme 'modus-vivendi t))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -54,12 +62,16 @@
 
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'doom-one t)
+(load-theme 'modus-operandi t)
 ;; Favoritt-themes
 ;;doom-meltbus
 ;;doom-feather-dark
 ;;modus-vivendi
 (set-frame-font "Iosevka-18" t t)
+
+;;; FFFElisp
+(require 'fff)
+(setq fff-grep-mode-cycle '("fuzzy" "regex" "plain"))
 
 ;;; Org mode
 (require 'org)
@@ -149,9 +161,9 @@
   "a" 'avy-goto-char-timer)
 
 (my-leader
-  "f" 'project-find-file
+  "f" 'fff-find-files
   "b" 'consult-buffer
-  "s" 'consult-ripgrep
+  "s" 'fff-live-grep
   "i" 'consult-line)
 
 (my-leader
