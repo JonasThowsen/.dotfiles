@@ -4,7 +4,4 @@ alias vim nvim
 alias nd "nix develop --command fish"
 zoxide init fish | source
 
-fish_add_path ~/.local/bin
-fish_add_path ~/.opencode/bin
-fish_add_path ~/.cargo/bin
-fish_add_path ~/.npm-global/bin
+set -gx PATH $PATH $HOME/.local/bin $HOME/.opencode/bin $HOME/.cargo/bin $HOME/.npm-global/bin
