@@ -1,50 +1,8 @@
 ;;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 
-;;; Wayland clipboard support (for wl-clipboard)
-(setq wl-copy-process nil)
-
-(defun wl-copy (text)
-  "Copy TEXT to Wayland clipboard using wl-copy."
-  (setq wl-copy-process (make-process :name "wl-copy"
-                                       :buffer nil
-                                       :command '("wl-copy" "-f" "-n")
-                                       :connection-type 'pipe
-                                       :noquery t))
-  (process-send-string wl-copy-process text)
-  (process-send-eof wl-copy-process))
-
-(defun wl-paste ()
-  "Paste from Wayland clipboard using wl-paste."
-  (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil
-    (shell-command-to-string "wl-paste -n 2>/dev/null")))
-
-(setq interprogram-cut-function 'wl-copy)
-(setq interprogram-paste-function 'wl-paste)
-
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (setq-default fill-column 80)
-
-;;; Helper functions
-(defun open-file-in-new-tab (file)
-  "Open FILE in a new tab."
-  (interactive "fFile: ")
-  (tab-bar-new-tab)
-  (find-file file))
-
-(defun open-eshell-in-split ()
-  (interactive)
-  (evil-window-split)
-  (eshell))
-
-(defun lightmode ()
-  (interactive)
-  (load-theme 'modus-operandi t))
-
-(defun darkmode ()
-  (interactive)
-  (load-theme 'modus-vivendi t))
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -63,11 +21,95 @@
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'modus-operandi t)
-;; Favoritt-themes
-;;doom-meltbus
-;;doom-feather-dark
-;;modus-vivendi
 (set-frame-font "Iosevka-18" t t)
+
+;;; Meow
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+
+(require 'meow)
+(meow-setup)
+(meow-global-mode 1)
 
 ;;; FFFElisp
 (require 'fff)
@@ -132,60 +174,6 @@
     (save-buffer)
     (message "Task moved back to %s as TODO" archive-file)))
 
-;;; General
-(require 'general)
-
-;;; Evil mode configuration
-(setq evil-want-C-u-scroll t)
-(setq evil-want-keybinding nil)
-(require 'evil)
-(evil-mode 1)
-(when (require 'evil-collection nil t)
-  (evil-collection-init))
-
-(evil-set-undo-system 'undo-redo)
-
-;; Evil packages
-(global-evil-surround-mode 1)
-
-;; General evil stuff
-(general-evil-setup t)
-
-(general-create-definer my-leader
-  :states '(normal visual motion)
-  :keymaps 'override
-  :prefix "SPC"
-  :global-prefix "C-SPC")
-
-(my-leader
-  "a" 'avy-goto-char-timer)
-
-(my-leader
-  "f" 'fff-find-files
-  "b" 'consult-buffer
-  "s" 'fff-live-grep
-  "i" 'consult-line)
-
-(my-leader
-  "t" 'open-eshell-in-split)
-
-(my-leader
-  "r" 'query-replace-regexp
-  "R" 'project-query-replace-regexp)
-
-;;; Magit
-(defun magit-diff-visit-file-in-new-tab ()
-  (interactive)
-  (tab-bar-new-tab)
-  (magit-diff-visit-file))
-
-(my-leader
-  "gg" 'magit)
-
-(my-leader
-  :keymaps 'magit-mode-map
-  "o" 'magit-diff-visit-file-in-new-tab)
-
 ;;; Vertico
 (require 'vertico)
 (vertico-mode)
@@ -205,43 +193,6 @@
 (require 'embark-consult)
 (global-set-key (kbd "C-.") #'embark-act)
 
-(defun my-embark-open-in-new-tab ()
-  "Open current embark target in a new tab."
-  (interactive)
-  (let ((target (car (embark--targets))))
-    (embark--act #'open-file-in-new-tab target t)))
-
-(defun my-embark-select-and-next ()
-  "Select current candidate and move to next."
-  (interactive)
-  (embark-select)
-  (vertico-next))
-
-(defun find-file-h (target)
-  (split-window-below)
-  (other-window 1)
-  (find-file target))
-
-(defun split-vertical-current-completion-candidate ()
-  (interactive)
-  (embark--act #'find-file-other-window (car (embark--targets)) t))
-
-(defun split-horizontal-current-completion-candidate ()
-  (interactive)
-  (embark--act #'+embark:find-file-h (car (embark--targets)) t))
-
-(with-eval-after-load 'embark
-  (define-key minibuffer-local-map (kbd "C-.") #'embark-act)
-  (define-key minibuffer-local-completion-map (kbd "C-.") #'embark-act)
-  (define-key embark-file-map (kbd "C-t") #'open-file-in-new-tab))
-
-(with-eval-after-load 'vertico
-  (define-key vertico-map (kbd "C-t") #'my-embark-open-in-new-tab)
-  (define-key vertico-map (kbd "C-SPC") #'my-embark-select-and-next)
-  (define-key vertico-map (kbd "C-q") #'embark-export)
-  (define-key vertico-map (kbd "C-v") #'split-vertical-current-completion-candidate)
-  (define-key vertico-map (kbd "C-s") #'split-horizontal-current-completion-candidate))
-
 (require 'marginalia)
 (marginalia-mode)
 
@@ -252,28 +203,8 @@
 (require 'wgrep)
 (setq wgrep-auto-save-buffer t)
 
-(defun open-grep-goto-error-new-tab ()
-  "Open grep result in a new tab."
-  (interactive)
-  (tab-bar-new-tab)
-  (compile-goto-error)
-  (delete-other-windows))
-
-(my-leader
-  :keymaps 'grep-mode-map
-  "o" 'open-grep-goto-error-new-tab
-  "e" 'wgrep-change-to-wgrep-mode
-  "d" 'wgrep-abort-changes)
-
 (require 'envrc)
 (envrc-global-mode)
-
-;;;evil-matchit
-(global-evil-matchit-mode 1)
-(evilmi-load-plugin-rules '(heex-ts-mode) '(template simple html))
-
-;;;evil-commentary
-(evil-commentary-mode)
 
 ;;; Tree-sitter mode associations
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
