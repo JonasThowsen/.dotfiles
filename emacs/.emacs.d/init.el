@@ -1,4 +1,4 @@
-;;; Custom keymaps
+;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 
 (add-hook 'text-mode-hook #'auto-fill-mode)
@@ -24,6 +24,8 @@
 (set-frame-font "Iosevka-18" t t)
 
 ;;; Meow
+(require 'view)
+
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-define-key
@@ -105,7 +107,9 @@
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
-   '("<escape>" . ignore)))
+   '("<escape>" . ignore)
+   '("C-j" . View-scroll-half-page-forward)
+   '("C-k" . View-scroll-half-page-backward)))
 
 (require 'meow)
 (meow-setup)
@@ -113,7 +117,8 @@
 
 ;;; FFFElisp
 (require 'fff)
-(setq fff-grep-mode-cycle '("fuzzy" "regex" "plain"))
+(global-set-key (kbd "C-c f f") #'fff-find-file)
+(global-set-key (kbd "C-c f g") #'fff-grep)
 
 ;;; Org mode
 (require 'org)
