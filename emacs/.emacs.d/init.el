@@ -1,6 +1,28 @@
 ;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 
+;;; Wayland clipboard support (for wl-clipboard)
+(setq wl-copy-process nil)
+
+(defun wl-copy (text)
+  "Copy TEXT to Wayland clipboard using wl-copy."
+  (setq wl-copy-process (make-process :name "wl-copy"
+                                       :buffer nil
+                                       :command '("wl-copy" "-f" "-n")
+                                       :connection-type 'pipe
+                                       :noquery t))
+  (process-send-string wl-copy-process text)
+  (process-send-eof wl-copy-process))
+
+(defun wl-paste ()
+  "Paste from Wayland clipboard using wl-paste."
+  (if (and wl-copy-process (process-live-p wl-copy-process))
+      nil
+    (shell-command-to-string "wl-paste -n 2>/dev/null")))
+
+(setq interprogram-cut-function 'wl-copy)
+(setq interprogram-paste-function 'wl-paste)
+
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (setq-default fill-column 80)
 
@@ -178,6 +200,16 @@
       (org-delete-property prop))
     (save-buffer)
     (message "Task moved back to %s as TODO" archive-file)))
+
+;;; Multiple cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-c m n") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-c m p") #'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c m a") #'mc/mark-all-like-this)
+(global-set-key (kbd "C-c m N") #'mc/unmark-next-like-this)
+(global-set-key (kbd "C-c m P") #'mc/unmark-previous-like-this)
+(global-set-key (kbd "C-c m w") #'mc/mark-all-words-like-this)
+(global-set-key (kbd "C-c m s") #'mc/mark-all-symbols-like-this)
 
 ;;; Vertico
 (require 'vertico)
