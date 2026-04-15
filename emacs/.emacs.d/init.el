@@ -1,5 +1,14 @@
 ;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
+(global-set-key (kbd "C-:") 'avy-goto-char-2)
+
+;; Expreg
+(global-set-key (kbd "C-=") 'expreg-expand)
+(global-set-key (kbd "C--") 'expreg-contract)
+
+;; Projects
+(with-eval-after-load 'project
+  (add-to-list 'project-vc-extra-root-markers ".project"))
 
 ;;; Wayland clipboard support (for wl-clipboard)
 (setq wl-copy-process nil)
@@ -207,9 +216,10 @@
 (global-set-key (kbd "C-c m p") #'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c m a") #'mc/mark-all-like-this)
 (global-set-key (kbd "C-c m N") #'mc/unmark-next-like-this)
-(global-set-key (kbd "C-c m P") #'mc/unmark-previous-like-this)
+(global-set-key(kbd "C-c m P") #'mc/unmark-previous-like-this)
 (global-set-key (kbd "C-c m w") #'mc/mark-all-words-like-this)
 (global-set-key (kbd "C-c m s") #'mc/mark-all-symbols-like-this)
+(global-set-key (kbd "C-c m e") #'mc/edit-lines)
 
 ;;; Vertico
 (require 'vertico)
