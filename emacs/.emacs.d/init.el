@@ -1,6 +1,15 @@
-;; Custom keymaps
+;;; Custom functions
+(defun vim-ce ()
+  (interactive)
+  (kill-sexp 1)
+  (meow-insert))
+  
+;;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
+
+;; Vim command alternatives
+(global-set-key (kbd "C-c c e") #'vim-ce)
 
 ;; Expreg
 (global-set-key (kbd "C-=") 'expreg-expand)
