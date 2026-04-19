@@ -92,10 +92,6 @@
   "s" 'fff-grep
   "i" 'consult-line)
 
-(my-leader
-  "r" 'query-replace-regexp
-  "R" 'project-query-replace-regexp)
-
 ;;; Magit
 (defun magit-diff-visit-file-in-new-tab ()
   (interactive)
@@ -169,15 +165,19 @@
     (message "Task moved back to %s as TODO" archive-file)))
 
 ;;; Multiple cursors
-;;(require 'multiple-cursors)
-;;(global-set-key (kbd "C-c m n") #'mc/mark-next-like-this)
-;;(global-set-key (kbd "C-c m p") #'mc/mark-previous-like-this)
-;;(global-set-key (kbd "C-c m a") #'mc/mark-all-like-this)
-;;(global-set-key (kbd "C-c m N") #'mc/unmark-next-like-this)
-;;(global-set-key(kbd "C-c m P") #'mc/unmark-previous-like-this)
-;;(global-set-key (kbd "C-c m w") #'mc/mark-all-words-like-this)
-;;(global-set-key (kbd "C-c m s") #'mc/mark-all-symbols-like-this)
-;;(global-set-key (kbd "C-c m e") #'mc/edit-lines)
+
+;; evil-multiedit
+(require 'evil-multiedit)
+(evil-multiedit-default-keybinds)
+(evil-define-key 'visual 'global
+  "R" #'evil-multiedit-match-all)
+
+;; evil-mc
+(require 'evil-mc)
+(global-evil-mc-mode 1)
+(evil-define-key 'visual evil-mc-key-map
+  "A" #'evil-mc-make-cursor-in-visual-selection-end
+  "I" #'evil-mc-make-cursor-in-visual-selection-beg)
 
 ;;; Vertico
 (require 'vertico)
