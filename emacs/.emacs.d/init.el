@@ -1,3 +1,8 @@
+;;; Fish shell stuff
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell "/run/current-system/sw/bin/fish")
+(setq-default explicit-shell-file-name "/run/current-system/sw/bin/fish")
+
 ;;; Custom keymaps
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 
@@ -50,7 +55,7 @@
 
 ;;; Theme and font
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'modus-operandi t)
+(load-theme 'catppuccin t)
 (set-frame-font "Iosevka-18" t t)
 
 ;;; FFFElisp
