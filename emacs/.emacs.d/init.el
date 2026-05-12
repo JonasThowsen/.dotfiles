@@ -113,6 +113,8 @@
 ;;; Org mode
 (require 'org)
 
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
