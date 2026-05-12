@@ -2,7 +2,7 @@
 vim.g.mapleader = " "
 
 -- Lsp
-vim.lsp.enable({'cssls', 'ts_ls', 'astro', 'html'})
+vim.lsp.enable({'cssls', 'ts_ls', 'astro', 'html', 'roslyn_ls'}) 
 
 vim.opt.completeopt = { "menuone", "noinsert", "popup" }
 local lsp_group = vim.api.nvim_create_augroup("my-lsp-setup", { clear = true })
