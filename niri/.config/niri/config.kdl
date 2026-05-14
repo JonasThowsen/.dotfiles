@@ -619,6 +619,9 @@ binds {
     Mod+Shift+P { screenshot-screen; }
     Mod+Alt+P { screenshot-window; }
 
+    // Pocr
+    Mod+Ctrl+T { spawn "nvidia-offload" "pocr-math"; }
+
     // Applications such as remote-desktop clients and software KVM switches may
     // request that niri stops processing the keyboard shortcuts defined here
     // so they may, for example, forward the key presses as-is to a remote machine.
