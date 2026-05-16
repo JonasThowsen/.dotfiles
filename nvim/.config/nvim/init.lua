@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP go to definition' })
+vim.keymap.set('n', 'grd', vim.lsp.buf.definition, { desc = 'LSP go to definition' })
 
 vim.keymap.set("n", "K", function()
   vim.lsp.buf.hover {
