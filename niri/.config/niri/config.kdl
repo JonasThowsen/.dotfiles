@@ -4,8 +4,9 @@
 // https://yalter.github.io/niri/Configuration:-Introduction
 
 cursor {
-  xcursor-theme "Adwaita"
+  xcursor-theme "Nordzy-catppuccin-mocha-yellow"
   xcursor-size 24
+  hide-when-typing
 }
 
 prefer-no-csd
