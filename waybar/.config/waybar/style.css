@@ -19,7 +19,8 @@
   margin-right: 8px;
 }
 
-#custom-update {
+#custom-update,
+#custom-nix {
   min-width: 12px;
   margin: 0 7.5px;
 }

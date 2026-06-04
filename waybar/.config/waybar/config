@@ -1,9 +1,10 @@
 {
   "layer": "top",
+  "output": ["DP-1", "eDP-1"],
   "reload_style_on_change": true,
   "height": 26,
   "spacing": 0,
-  "modules-left": ["image", "niri/workspaces" ],
+  "modules-left": ["custom/nix", "niri/workspaces" ],
   "modules-center": [ "clock" ],
   "modules-right": [
     "bluetooth",
@@ -35,6 +36,8 @@
     "tooltip": false,
   },
   "battery": {
+    "bat": "BAT0",
+    "adapter": "ADP0",
     "format": "{capacity}% {icon}",
     "format-discharging": "{icon}",
     "format-charging": "{icon}",
@@ -46,7 +49,7 @@
     "format-full": "󰂅",
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
-    "interval": 5,
+    "interval": 30,
     "states": {
       "warning": 20,
       "critical": 10
@@ -76,8 +79,9 @@
       "default": ["", "", ""]
     }
   },
-  "image": {
-    "path": "/home/jonas/.config/waybar/nix.svg",
+  "custom/nix": {
+    "format": "",
+    "tooltip": false,
   },
   "bluetooth": {
     "format": "",
