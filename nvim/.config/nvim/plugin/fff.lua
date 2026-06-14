@@ -31,6 +31,7 @@ vim.g.fff = {
   lazy_sync = true,
     prompt = 'λ ',
     layout = {
+      prompt_position = 'top',
       height = 0.9,
       width = 0.9,
     }
