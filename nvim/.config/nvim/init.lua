@@ -76,6 +76,16 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 vim.keymap.set('n', 'J', 'mzJ`z')
 
+vim.keymap.set('n', '<C-1>', '1gt', { desc = 'Go to tab 1'})
+vim.keymap.set('n', '<C-2>', '2gt', { desc = 'Go to tab 2'})
+vim.keymap.set('n', '<C-3>', '3gt', { desc = 'Go to tab 3'})
+vim.keymap.set('n', '<C-4>', '4gt', { desc = 'Go to tab 4'})
+vim.keymap.set('n', '<C-5>', '5gt', { desc = 'Go to tab 5'})
+vim.keymap.set('n', '<C-6>', '6gt', { desc = 'Go to tab 6'})
+vim.keymap.set('n', '<C-7>', '7gt', { desc = 'Go to tab 7'})
+vim.keymap.set('n', '<C-8>', '8gt', { desc = 'Go to tab 8'})
+vim.keymap.set('n', '<C-9>', '9gt', { desc = 'Go to tab 9'})
+
 -- Neovim builtin terminal keymaps
 vim.keymap.set('n', '<leader>T', [[<CMD>below new<CR><CMD>terminal<CR>]], { desc = 'Open terminal in bottom split' })
 vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], { desc = 'Back to normal mode in terminal mode' })
