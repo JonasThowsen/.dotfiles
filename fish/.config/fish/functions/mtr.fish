@@ -17,10 +17,14 @@ function mtr
         --preview "bat --style=numbers --color=always $file --highlight-line {1}")
 
     if test -z "$match"
-        mix test "$file"
+        set cmd "mix test "(string escape -- $file)
+        history append $cmd
+        eval $cmd
         return
     end
 
     set line (string split ":" $match)[1]
-    mix test "$file":"$line"
+    set cmd "mix test "(string escape -- "$file:$line")
+    history append $cmd
+    eval $cmd
 end
