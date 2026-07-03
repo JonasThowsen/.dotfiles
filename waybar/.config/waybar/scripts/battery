@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bat="/sys/class/power_supply/BAT0"
+
+capacity=$(<"$bat/capacity")
+status=$(<"$bat/status")
+power_now=$(<"$bat/power_now")
+icon_index=$(( capacity / 10 ))
+(( icon_index > 9 )) && icon_index=9
+
+default_icons=("󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
+charging_icons=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
+
+if [[ "$status" == "Full" ]]; then
+  icon="󰂅"
+elif [[ "$status" == "Charging" ]]; then
+  icon="${charging_icons[icon_index]}"
+else
+  icon="${default_icons[icon_index]}"
+fi
+
+watts=$(( (power_now + 500000) / 1000000 ))
+arrow="↓"
+class="discharging"
+
+if [[ "$status" == "Charging" ]]; then
+  arrow="↑"
+  class="charging"
+elif [[ "$status" == "Full" ]]; then
+  class="full"
+elif (( capacity <= 10 )); then
+  class="critical"
+elif (( capacity <= 20 )); then
+  class="warning"
+fi
+
+printf '{"text":"%s","tooltip":"%sW%s %s%%","class":"%s"}\n' "$icon" "$watts" "$arrow" "$capacity" "$class"
