@@ -1,0 +1,11 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+
+[keys]
+prefix = "ctrl+space"
+open_worktree = "prefix+ctrl+w"
+
+[ui]
+agent_panel_scope = "all"
