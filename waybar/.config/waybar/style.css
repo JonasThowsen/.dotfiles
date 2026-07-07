@@ -19,12 +19,6 @@
   margin-right: 8px;
 }
 
-#custom-update,
-#custom-nix {
-  min-width: 12px;
-  margin: 0 7.5px;
-}
-
 #workspaces button {
   all: initial;
   padding: 0 6px;
