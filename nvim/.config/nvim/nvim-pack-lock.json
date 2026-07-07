@@ -1,15 +1,19 @@
 {
   "plugins": {
     "fff.nvim": {
-      "rev": "733431e068746681cdf392101cadc5692d7f0d88",
+      "rev": "98af56c393a596292a24fb00d5b672306706b07c",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "flash.nvim": {
       "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
       "src": "https://github.com/folke/flash.nvim"
     },
+    "neogit": {
+      "rev": "6fc2fa890bd2031ed999c074daab0fb4feff20a5",
+      "src": "https://github.com/NeogitOrg/neogit"
+    },
     "nvim-lspconfig": {
-      "rev": "a683e0ddf0cf64c6cd689e18ffb480ade3c162b7",
+      "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
