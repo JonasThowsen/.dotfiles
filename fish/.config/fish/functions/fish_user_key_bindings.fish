@@ -1,3 +1,3 @@
 function fish_user_key_bindings
-    bind \ct 'tmux-sessionizer; commandline -f repaint'
+    bind \ct 'hs; commandline -f repaint'
 end
