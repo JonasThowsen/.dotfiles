@@ -1,13 +1,29 @@
 # Theme
 theme = Catppuccin Mocha
+gtk-toolbar-style = flat
 
 # Font
 font-family = Jetbrains Mono
 
 # Keybinds
+## Scroll
 keybind = alt+u=scroll_page_up
 keybind = alt+d=scroll_page_down
+## Search
 keybind = alt+f=start_search
+## Tabs
+keybind = alt+w=close_tab:this
+keybind = alt+t=new_tab
+## Splits
+keybind = alt+v=new_split:right
+keybind = alt+s=new_split:down
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right
 
 # Mouse
 mouse-hide-while-typing = true
+
+# Copy
+copy-on-select = true
