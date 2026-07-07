@@ -36,6 +36,7 @@ input {
     touchpad {
         // off
         tap
+        scroll-factor 0.5
         // dwt
         // dwtp
         // drag false
