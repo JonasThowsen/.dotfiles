@@ -1,0 +1,13 @@
+# Theme
+theme = Catppuccin Mocha
+
+# Font
+font-family = Jetbrains Mono
+
+# Keybinds
+keybind = alt+u=scroll_page_up
+keybind = alt+d=scroll_page_down
+keybind = alt+f=start_search
+
+# Mouse
+mouse-hide-while-typing = true
