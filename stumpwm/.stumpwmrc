@@ -1,0 +1,332 @@
+;; -*-lisp-*-
+
+(in-package :stumpwm)
+
+;;; Basics
+
+(set-prefix-key (kbd "C-j"))
+(set-font "-adobe-courier-bold-r-normal--24-240-75-75-m-150-iso10646-1")
+(run-shell-command "feh --no-fehbg --bg-fill $HOME/backgrounds/gruvbox.png")
+
+(defcommand dismiss-popup () ()
+  "Hide StumpWM messages and leave command mode when it is active."
+  (unmap-all-message-windows)
+  (when (eq *top-map* *root-map*)
+    (keyboard-quit)))
+
+(define-key *root-map* (kbd "C-g") "dismiss-popup")
+
+;; Focus follows the pointer without requiring a click.
+(setf *mouse-focus-policy* :sloppy
+      *message-window-gravity* :center
+      *input-window-gravity* :center
+      *menu-maximum-height* 12)
+
+;;; Startup applications
+
+(run-shell-command "pgrep -x dunst >/dev/null || exec dunst")
+
+;;; Fuzzy menus
+
+(defun fuzzy-subsequence-p (needle haystack)
+  "Return true when NEEDLE's characters occur in order in HAYSTACK."
+  (let ((start 0))
+    (loop for character across needle
+          unless (char= character #\Space)
+            do (let ((position (position character haystack
+                                         :start start
+                                         :test #'char-equal)))
+                 (unless position
+                   (return-from fuzzy-subsequence-p nil))
+                 (setf start (1+ position))))
+    t))
+
+(defun fuzzy-menu-match-p (label object input)
+  (declare (ignore object))
+  (fuzzy-subsequence-p input label))
+
+(defcommand fuzzy-window-menu () ()
+  "Fuzzy-find and focus a window in the current group."
+  (let* ((windows (group-windows (current-group)))
+         (entries
+           (mapcar (lambda (window)
+                     (list (format nil "~A - ~A"
+                                   (window-class window)
+                                   (window-name window))
+                           window))
+                   windows))
+         (selection (select-from-menu (current-screen) entries
+                                      "Window:" 0 nil
+                                      #'fuzzy-menu-match-p)))
+    (when selection
+      (focus-all (second selection)))))
+
+(defcommand fuzzy-group-menu () ()
+  "Fuzzy-find and switch to a group on the current screen."
+  (let* ((entries
+           (mapcar (lambda (group)
+                     (list (format nil "~A  (~D window~:P)"
+                                   (group-name group)
+                                   (length (group-windows group)))
+                           group))
+                   (sort-groups (current-screen))))
+         (selection (select-from-menu (current-screen) entries
+                                      "Group:" 0 nil
+                                      #'fuzzy-menu-match-p)))
+    (when selection
+      (switch-to-group (second selection)))))
+
+(define-key *root-map* (kbd "g") "fuzzy-group-menu")
+(define-key *root-map* (kbd "w") "fuzzy-window-menu")
+
+;;; Modeline
+
+;; Muted palette and black modeline styling.
+(setf *colors*
+      '("#000000"
+        "#BF6262"
+        "#a1bf78"
+        "#dbb774"
+        "#7D8FA3"
+        "#ff99ff"
+        "#53cdbd"
+        "#ffffff"))
+(update-color-map (current-screen))
+
+(defun modeline-command (command)
+  (string-trim '(#\Space #\Tab #\Newline)
+               (or (run-shell-command command t) "")))
+
+(defun modeline-battery ()
+  (modeline-command
+   "for b in /sys/class/power_supply/BAT*; do if [ -r \"$b/capacity\" ]; then printf 'BAT %s%%' \"$(cat \"$b/capacity\")\"; exit; fi; done; printf 'BAT AC'"))
+
+(defun modeline-network ()
+  (modeline-command
+   "nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '$3 == \"connected\" && ($2 == \"wifi\" || $2 == \"ethernet\") { print toupper($2) \" \" $4; found=1; exit } END { if (!found) print \"NET offline\" }'"))
+
+(defun modeline-bluetooth ()
+  (modeline-command
+   "devices=$(bluetoothctl devices Connected 2>/dev/null | cut -d' ' -f3- | paste -sd, -); if [ -n \"$devices\" ]; then printf 'BT %s' \"$devices\"; elif bluetoothctl show 2>/dev/null | grep -q 'Powered: yes'; then printf 'BT on'; else printf 'BT off'; fi"))
+
+(defun modeline-volume ()
+  (modeline-command
+   "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{ if ($0 ~ /\\[MUTED\\]/) print \"VOL muted\"; else printf \"VOL %.0f%%\", $2 * 100 }'"))
+
+(defvar *modeline-network-status* "NET ...")
+(defvar *modeline-bluetooth-status* "BT ...")
+(defvar *modeline-battery-status* "BAT ...")
+(defvar *modeline-volume-status* "VOL ...")
+(defvar *modeline-status-timer* nil)
+(defvar *modeline-status-refreshing-p* nil)
+
+(defun update-modeline-status ()
+  "Refresh external status without blocking StumpWM's event loop."
+  (unless *modeline-status-refreshing-p*
+    (setf *modeline-status-refreshing-p* t)
+    (sb-thread:make-thread
+     (lambda ()
+       (handler-case
+           (let ((network (modeline-network))
+                 (bluetooth (modeline-bluetooth))
+                 (battery (modeline-battery))
+                 (volume (modeline-volume)))
+             (call-in-main-thread
+              (lambda ()
+                (setf *modeline-network-status* network
+                      *modeline-bluetooth-status* bluetooth
+                      *modeline-battery-status* battery
+                      *modeline-volume-status* volume
+                      *modeline-status-refreshing-p* nil)
+                (update-all-mode-lines))))
+         (error ()
+           (call-in-main-thread
+            (lambda ()
+              (setf *modeline-status-refreshing-p* nil))))))
+     :name "StumpWM modeline status")))
+
+(defun update-modeline-volume ()
+  (setf *modeline-volume-status* (modeline-volume))
+  (update-all-mode-lines))
+
+(defun run-volume-command (command)
+  (run-shell-command command t)
+  (update-modeline-volume))
+
+(defcommand audio-volume-up () ()
+  (run-volume-command "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"))
+
+(defcommand audio-volume-down () ()
+  (run-volume-command "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"))
+
+(defcommand audio-volume-toggle-mute () ()
+  (run-volume-command "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
+
+(setf *window-format* "%n%s%16t"
+      *mode-line-position* :top
+      *mode-line-background-color* (car *colors*)
+      *mode-line-foreground-color* (car (last *colors*))
+      *mode-line-border-color* (car *colors*)
+      *mode-line-border-width* 1
+      *mode-line-pad-x* 8
+      *mode-line-pad-y* 3
+      *mode-line-timeout* 60
+      *time-modeline-string* "%a %d %b %H:%M"
+      *screen-mode-line-format*
+      '(" ^B^3[%g]^b^n  "
+        "^7%W^n "
+        "^>"
+        "^7["
+        *modeline-network-status*
+        "^7] ["
+        *modeline-bluetooth-status*
+        "^7] ["
+        *modeline-volume-status*
+        "^7] ["
+        *modeline-battery-status*
+        "^7] ["
+        "%d"
+        "^7] "))
+
+(destroy-all-mode-lines)
+(dolist (head (screen-heads (current-screen)))
+  (enable-mode-line (current-screen) head t *screen-mode-line-format*))
+
+(when (timer-p *modeline-status-timer*)
+  (cancel-timer *modeline-status-timer*))
+(update-modeline-status)
+(setf *modeline-status-timer*
+      (run-with-timer 5 5 'update-modeline-status))
+
+;;; Gaps
+
+(init-load-path #p"~/.config/stumpwm/modules/")
+(load-module "swm-gaps")
+(setf swm-gaps:*inner-gaps-size* 13
+      swm-gaps:*outer-gaps-size* 7
+      swm-gaps:*head-gaps-size* 0)
+(if swm-gaps:*gaps-on*
+    (swm-gaps::reset-all-windows)
+    (swm-gaps:toggle-gaps-on))
+(define-key *groups-map* (kbd "G") "toggle-gaps")
+
+;;; Layout history
+
+(load-module "winner-mode")
+
+(defun record-winner-layout (command)
+  (when (member command winner-mode:*default-commands*)
+    (winner-mode:dump-group-to-file)))
+
+(add-hook *post-command-hook* 'record-winner-layout)
+(winner-mode:dump-group-to-file)
+(define-key *root-map* (kbd "u") "winner-undo")
+(define-key *root-map* (kbd "C-r") "winner-redo")
+
+;;; Vim-style window navigation
+
+(define-key *top-map* (kbd "s-h") "move-focus left")
+(define-key *top-map* (kbd "s-j") "move-focus down")
+(define-key *top-map* (kbd "s-k") "move-focus up")
+(define-key *top-map* (kbd "s-l") "move-focus right")
+
+;; Move the focused window between frames, matching the Niri Ctrl bindings.
+(define-key *top-map* (kbd "s-C-h") "move-window left")
+(define-key *top-map* (kbd "s-C-j") "move-window down")
+(define-key *top-map* (kbd "s-C-k") "move-window up")
+(define-key *top-map* (kbd "s-C-l") "move-window right")
+
+;; Pull hidden windows from the current group into the focused frame.
+(define-key *top-map* (kbd "s-n") "pull-hidden-next")
+(define-key *top-map* (kbd "s-p") "pull-hidden-previous")
+
+;;; Applications and session
+
+(define-key *top-map* (kbd "s-RET") "exec ghostty")
+(define-key *top-map* (kbd "s-SPC") "exec rofi -show drun")
+(define-key *top-map* (kbd "s-q") "delete")
+(define-key *top-map* (kbd "s-M-l") "exec xsecurelock")
+(define-key *top-map* (kbd "s-R") "loadrc")
+;; Leave R unbound here so the tiled-group default, "remove", applies.
+(define-key *root-map* (kbd "R") nil)
+
+;;; Groups
+
+;; C-j g c/f/d creates a tiled, floating, or dynamic group.
+(define-key *groups-map* (kbd "c") "gnew")
+(define-key *groups-map* (kbd "f") "gnew-float")
+(define-key *groups-map* (kbd "d") "gnew-dynamic")
+
+(loop for number from 1 to 9
+      do (define-key *top-map*
+                     (kbd (format nil "s-~D" number))
+                     (format nil "gselect ~D" number))
+         (define-key *top-map*
+                     (kbd (format nil "s-C-~D" number))
+                     (format nil "gmove ~D" number)))
+
+;;; Splits
+
+(load-module "beckon")
+(defmacro with-focus-lost (&body body)
+  "Move the pointer away while changing frames, then center it on focus."
+  `(progn
+     (banish)
+     ,@body
+     (when (current-window)
+       (beckon:beckon))))
+
+(defcommand hsplit-and-focus () ()
+  "create a new frame on the right and focus it."
+  (with-focus-lost
+   (hsplit)
+   (move-focus :right)))
+
+(defcommand vsplit-and-focus () ()
+  "create a new frame below and focus it."
+  (with-focus-lost
+   (vsplit)
+   (move-focus :down)))
+(define-key *root-map* (kbd "v") "hsplit-and-focus")
+(define-key *root-map* (kbd "s") "vsplit-and-focus")
+
+;;; Screenshots
+
+(defun screenshot-shell-command (arguments)
+  (format nil
+          "dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=\"$dir/screenshot-$(date +%d-%m-%Y_%H-%M-%S).png\"; if maim ~A \"$file\"; then xclip -selection clipboard -t image/png -i \"$file\"; notify-send -a StumpWM -i camera-photo 'Screenshot saved' \"Copied to clipboard\\n$file\"; else notify-send -a StumpWM -u low 'Screenshot cancelled' 'No image was saved'; fi"
+          arguments))
+
+(defcommand take-screenshot-area () ()
+  (run-shell-command (screenshot-shell-command "-s")))
+
+(defcommand take-screenshot-screen () ()
+  (run-shell-command (screenshot-shell-command "")))
+
+(defcommand take-screenshot-window () ()
+  (if (current-window)
+      (run-shell-command
+       (screenshot-shell-command
+        (format nil "-i ~D" (window-id (current-window)))))
+      (run-shell-command
+       "notify-send -a StumpWM -u normal 'Screenshot failed' 'No focused window'")))
+
+;; Same chords as ~/.config/niri/config.kdl.
+(define-key *top-map* (kbd "s-C-p") "take-screenshot-area")
+(define-key *top-map* (kbd "s-P") "take-screenshot-screen")
+(define-key *top-map* (kbd "s-M-p") "take-screenshot-window")
+
+;;; Hardware keys
+
+(define-key *top-map* (kbd "XF86AudioRaiseVolume")
+  "audio-volume-up")
+(define-key *top-map* (kbd "XF86AudioLowerVolume")
+  "audio-volume-down")
+(define-key *top-map* (kbd "XF86AudioMute")
+  "audio-volume-toggle-mute")
+(define-key *top-map* (kbd "XF86AudioMicMute")
+  "exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")
+(define-key *top-map* (kbd "XF86MonBrightnessUp")
+  "exec brightnessctl --device=intel_backlight set +1%")
+(define-key *top-map* (kbd "XF86MonBrightnessDown")
+  "exec brightnessctl --device=intel_backlight set 1%-")
