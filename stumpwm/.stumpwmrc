@@ -258,6 +258,25 @@
 (define-key *groups-map* (kbd "d") "gnew-dynamic")
 (define-key *groups-map* (kbd "g") "fuzzy-group-menu")
 
+(defun repack-group-numbers (screen)
+  "Assign contiguous numbers to the visible groups on SCREEN."
+  (loop for group in (non-hidden-groups (sort-groups screen))
+        for number from 1
+        do (setf (group-number group) number))
+  (netwm-update-groups screen)
+  (netwm-set-group-properties screen)
+  (update-all-mode-lines))
+
+(defcommand gkill-and-repack () ()
+  "Kill the current group and close any gap in the group numbers."
+  (let ((screen (current-screen))
+        (dead-group (current-group)))
+    (gkill)
+    (unless (member dead-group (screen-groups screen))
+      (repack-group-numbers screen))))
+
+(define-key *groups-map* (kbd "k") "gkill-and-repack")
+
 (loop for number from 1 to 9
       do (define-key *top-map*
                      (kbd (format nil "s-~D" number))
