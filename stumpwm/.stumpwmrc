@@ -76,7 +76,6 @@
     (when selection
       (switch-to-group (second selection)))))
 
-(define-key *root-map* (kbd "g") "fuzzy-group-menu")
 (define-key *root-map* (kbd "w") "fuzzy-window-menu")
 
 ;;; Modeline
@@ -253,9 +252,11 @@
 ;;; Groups
 
 ;; C-j g c/f/d creates a tiled, floating, or dynamic group.
+(define-key *root-map* (kbd "g") '*groups-map*)
 (define-key *groups-map* (kbd "c") "gnew")
 (define-key *groups-map* (kbd "f") "gnew-float")
 (define-key *groups-map* (kbd "d") "gnew-dynamic")
+(define-key *groups-map* (kbd "g") "fuzzy-group-menu")
 
 (loop for number from 1 to 9
       do (define-key *top-map*
