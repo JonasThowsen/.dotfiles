@@ -1,9 +1,11 @@
 # Theme
 theme = Catppuccin Mocha
 gtk-toolbar-style = flat
+gtk-titlebar = false
 
 # Font
 font-family = Jetbrains Mono
+font-size = 20
 
 # Keybinds
 ## Scroll
