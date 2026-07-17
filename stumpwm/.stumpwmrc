@@ -102,7 +102,7 @@
 
 (defun modeline-network ()
   (modeline-command
-   "nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '$3 == \"connected\" && ($2 == \"wifi\" || $2 == \"ethernet\") { print toupper($2) \" \" $4; found=1; exit } END { if (!found) print \"NET offline\" }'"))
+   "for path in /sys/class/net/*/wireless; do [ -d \"$path\" ] || continue; iface=${path%/wireless}; iface=${iface##*/}; network=$(iwctl station \"$iface\" show 2>/dev/null | awk '$1 == \"State\" { state=$2 } $1 == \"Connected\" && $2 == \"network\" { $1=$2=\"\"; sub(/^[[:space:]]+/, \"\"); ssid=$0 } END { if (state == \"connected\") print ssid }'); if [ -n \"$network\" ]; then printf 'WIFI %s\\n' \"$network\"; exit; fi; done; for path in /sys/class/net/*; do iface=${path##*/}; [ -e \"$path/device\" ] || continue; [ -d \"$path/wireless\" ] && continue; [ \"$(cat \"$path/operstate\" 2>/dev/null)\" = up ] && { printf 'ETHERNET %s\\n' \"$iface\"; exit; }; done; printf 'NET offline\\n'"))
 
 (defun modeline-bluetooth ()
   (modeline-command
