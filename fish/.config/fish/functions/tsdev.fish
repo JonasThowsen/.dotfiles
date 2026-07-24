@@ -1,6 +1,11 @@
 function tsdev --description "Manage local development services through Tailscale"
     set -l action $argv[1]
 
+    if not command -q tailscale-services
+        echo "The tailscale-services helper is unavailable; rebuild ~/nixos first."
+        return 1
+    end
+
     switch "$action"
         case up
             if test (count $argv) -ne 3
@@ -26,7 +31,7 @@ function tsdev --description "Manage local development services through Tailscal
                 return 1
             end
 
-            tailscale serve \
+            tailscale-services serve \
                 --service="svc:$service" \
                 --https=443 \
                 "127.0.0.1:$port"
@@ -50,8 +55,8 @@ function tsdev --description "Manage local development services through Tailscal
                 return 1
             end
 
-            tailscale serve drain "svc:$service"
-            and tailscale serve clear "svc:$service"
+            tailscale-services serve drain "svc:$service"
+            and tailscale-services serve clear "svc:$service"
 
         case url
             if test (count $argv) -ne 2
@@ -71,7 +76,7 @@ function tsdev --description "Manage local development services through Tailscal
                 return 1
             end
 
-            set -l suffix (tailscale status --json | jq -r '.MagicDNSSuffix')
+            set -l suffix (tailscale-services status --json | jq -r '.MagicDNSSuffix')
 
             if test -z "$suffix"; or test "$suffix" = "null"
                 echo "Could not determine the tailnet DNS suffix"
@@ -87,11 +92,11 @@ function tsdev --description "Manage local development services through Tailscal
             end
 
             if not command -q jq
-                tailscale serve status --json
+                tailscale-services serve status --json
                 return $status
             end
 
-            tailscale serve status --json | jq -r '
+            tailscale-services serve status --json | jq -r '
                 def without_default_https_port: sub(":443$"; "");
 
                 if ((.Services // {}) | length) == 0 then

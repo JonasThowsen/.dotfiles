@@ -10,6 +10,12 @@ toggle_sidebar = "prefix+e"
 edit_scrollback = "prefix+shift+s"
 
 [ui]
-agent_panel_scope = "all"
 sidebar_collapsed_mode = "hidden"
 agent_panel_sort = "spaces"
+
+show_agent_labels_on_pane_borders = false
+[ui.toast]
+delivery = "system"
+
+[experimental]
+pane_history = false
