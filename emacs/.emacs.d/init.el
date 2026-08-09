@@ -14,28 +14,6 @@
 (with-eval-after-load 'project
   (add-to-list 'project-vc-extra-root-markers ".project"))
 
-;;; Wayland clipboard support (for wl-clipboard)
-(setq wl-copy-process nil)
-
-(defun wl-copy (text)
-  "Copy TEXT to Wayland clipboard using wl-copy."
-  (setq wl-copy-process (make-process :name "wl-copy"
-                                       :buffer nil
-                                       :command '("wl-copy" "-f" "-n")
-                                       :connection-type 'pipe
-                                       :noquery t))
-  (process-send-string wl-copy-process text)
-  (process-send-eof wl-copy-process))
-
-(defun wl-paste ()
-  "Paste from Wayland clipboard using wl-paste."
-  (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil
-    (shell-command-to-string "wl-paste -n 2>/dev/null")))
-
-(setq interprogram-cut-function 'wl-copy)
-(setq interprogram-paste-function 'wl-paste)
-
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (setq-default fill-column 80)
 
@@ -53,10 +31,8 @@
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
 
-;;; Theme and font
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'catppuccin t)
-(set-frame-font "Iosevka-18" t t)
+;;; Font
+(set-frame-font "Iosevka-14" t t)
 
 ;;; FFFElisp
 (require 'fff)
@@ -77,6 +53,7 @@
 (evil-set-undo-system 'undo-redo)
 
 ;; Evil packages
+(require 'evil-surround)
 (global-evil-surround-mode 1)
 
 ;; General evil stuff
@@ -218,6 +195,24 @@
 (require 'envrc)
 (envrc-global-mode)
 
+;;; Clojure
+(require 'clojure-mode)
+(require 'cider)
+(require 'paredit)
+(require 'rainbow-delimiters)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+
+(dolist (hook '(clojure-mode-hook
+                clojurescript-mode-hook
+                clojurec-mode-hook))
+  (add-hook hook #'paredit-mode)
+  (add-hook hook #'eglot-ensure))
+
+(setq cider-save-file-on-load t
+      cider-repl-display-help-banner nil)
+
 ;;; Tree-sitter mode associations
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
@@ -240,4 +235,22 @@
 ;; Eglot
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               '(python-ts-mode . ("uv" "run" "basedpyright-langserver" "--stdio"))))
+               '(python-ts-mode . ("uv" "run" "basedpyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '((clojure-mode clojurescript-mode clojurec-mode)
+                 . ("clojure-lsp"))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values
+   '((eval progn (make-variable-buffer-local 'cider-jack-in-nrepl-middlewares)
+	   (add-to-list 'cider-jack-in-nrepl-middlewares
+			"shadow.cljs.devtools.server.nrepl/middleware")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
