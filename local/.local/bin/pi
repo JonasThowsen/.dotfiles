@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Herdr panes may outlive the Xorg session that created them. If their inherited
+# display is gone, use the display exported by the current graphical session.
+if [[ -n "${DISPLAY:-}" ]] && ! xset -display "$DISPLAY" q >/dev/null 2>&1; then
+  active_display="$(systemctl --user show-environment | sed -n 's/^DISPLAY=//p' | head -n 1)"
+  active_xauthority="$(systemctl --user show-environment | sed -n 's/^XAUTHORITY=//p' | head -n 1)"
+
+  [[ -n "$active_display" ]] && export DISPLAY="$active_display"
+  [[ -n "$active_xauthority" ]] && export XAUTHORITY="$active_xauthority"
+fi
+
+exec "$HOME/.npm-global/bin/pi" "$@"

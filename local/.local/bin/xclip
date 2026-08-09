@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Long-lived Herdr panes can retain an X display from an earlier graphical
+# session. Resolve a dead display through the current systemd user environment.
+if [[ -n "${DISPLAY:-}" ]] && ! /run/current-system/sw/bin/xset -display "$DISPLAY" q >/dev/null 2>&1; then
+  active_display="$(systemctl --user show-environment | sed -n 's/^DISPLAY=//p' | head -n 1)"
+  active_xauthority="$(systemctl --user show-environment | sed -n 's/^XAUTHORITY=//p' | head -n 1)"
+
+  [[ -n "$active_display" ]] && export DISPLAY="$active_display"
+  [[ -n "$active_xauthority" ]] && export XAUTHORITY="$active_xauthority"
+fi
+
+exec /run/current-system/sw/bin/xclip "$@"
