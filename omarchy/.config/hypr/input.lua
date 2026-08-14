@@ -5,9 +5,10 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
 hl.config({
 input = {
-  -- Use multiple keyboard layouts and switch between them with Left Alt + Right Alt.
+  -- Norwegian layout. Do not bind Alt keys to layout switching: Right Alt
+  -- (AltGr) is needed to enter Norwegian third-level symbols such as @.
   kb_layout = "no",
-  kb_options = "caps:escape,shift:both_capslock_cancel,grp:alts_toggle",
+  kb_options = "caps:escape,shift:both_capslock_cancel",
 
   -- Standard Norwegian keyboard layout.
   kb_variant = "",
