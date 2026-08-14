@@ -51,6 +51,24 @@ o.bind("CTRL + ALT + L", "Toggle workspace layout", "omarchy-hyprland-workspace-
 hl.unbind("SUPER + ALT + F")
 o.bind("CTRL + ALT + M", "Full width", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
+-- Resize with a comfortable Vim-style cluster instead of layout-dependent +/- keys.
+hl.unbind("SUPER + code:20")
+hl.unbind("SUPER + code:21")
+hl.unbind("SUPER + SHIFT + code:20")
+hl.unbind("SUPER + SHIFT + code:21")
+hl.unbind("SUPER + ALT + code:20")
+hl.unbind("SUPER + ALT + code:21")
+hl.unbind("SUPER + SHIFT + ALT + code:20")
+hl.unbind("SUPER + SHIFT + ALT + code:21")
+hl.unbind("SUPER + CTRL + code:20")
+hl.unbind("SUPER + CTRL + code:21")
+hl.unbind("SUPER + CTRL + SHIFT + code:20")
+hl.unbind("SUPER + CTRL + SHIFT + code:21")
+o.bind("CTRL + SHIFT + H", "Expand window left", hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
+o.bind("CTRL + SHIFT + L", "Shrink window left", hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
+o.bind("CTRL + SHIFT + K", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
+o.bind("CTRL + SHIFT + J", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
+
 -- Move tiled windows with Super+Shift+H/J/K/L, matching your preferred Niri keys.
 o.bind("SUPER + SHIFT + H", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
 o.bind("SUPER + SHIFT + J", "Swap window down", hl.dsp.window.swap({ direction = "d" }))
