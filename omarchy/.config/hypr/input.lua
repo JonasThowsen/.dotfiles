@@ -8,7 +8,7 @@ input = {
   -- Norwegian layout. Do not bind Alt keys to layout switching: Right Alt
   -- (AltGr) is needed to enter Norwegian third-level symbols such as @.
   kb_layout = "no",
-  kb_options = "caps:escape,shift:both_capslock_cancel",
+  kb_options = "caps:escape",
 
   -- Standard Norwegian keyboard layout.
   kb_variant = "",
