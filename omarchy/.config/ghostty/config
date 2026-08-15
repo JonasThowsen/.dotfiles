@@ -26,6 +26,7 @@ keybind = alt+l=goto_split:right
 
 # Mouse
 mouse-hide-while-typing = true
+mouse-scroll-multiplier = precision:0.80,discrete:0.80
 
 # Copy
 copy-on-select = true
