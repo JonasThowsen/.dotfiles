@@ -29,4 +29,5 @@ mouse-hide-while-typing = true
 mouse-scroll-multiplier = precision:0.80,discrete:0.80
 
 # Copy
-copy-on-select = true
+# Copy selections to both the primary selection and regular system clipboard.
+copy-on-select = clipboard
