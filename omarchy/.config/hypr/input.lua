@@ -45,6 +45,10 @@ input = {
 },
   })
 
+-- Keep the pointer visible while using Hyprland keyboard navigation.
+-- Ghostty still hides it while you type via mouse-hide-while-typing.
+hl.config({ cursor = { hide_on_key_press = false } })
+
 -- App-specific touchpad scroll speeds.
 -- o.window("(Alacritty|kitty|foot)", { scroll_touchpad = 1.5 })
 -- o.window("com.mitchellh.ghostty", { scroll_touchpad = 0.2 })
