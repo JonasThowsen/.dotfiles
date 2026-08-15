@@ -2,7 +2,34 @@
 vim.g.mapleader = " "
 
 -- Lsp
-vim.lsp.enable({'cssls', 'ts_ls', 'astro', 'html', 'roslyn_ls', 'ocamllsp'}) 
+-- Repositories can provide a project launcher when separate Dune roots need
+-- separate Nix environments. PISS uses this for its backend and Bonsai web
+-- projects; other OCaml projects retain the regular ocamllsp command.
+vim.lsp.config("ocamllsp", {
+  cmd = function(dispatchers, config)
+    local project_root = config.root_dir or vim.fn.getcwd()
+    local repository_root = vim.fs.root(project_root, ".git")
+    local project_flake = repository_root and (repository_root .. "/flake.nix")
+
+    if project_flake and vim.fn.filereadable(project_flake) == 1 then
+      local web_root = vim.fs.normalize(repository_root .. "/web")
+      local flake_ref = repository_root
+      if vim.fs.normalize(project_root) == web_root then
+        flake_ref = flake_ref .. "#web"
+      end
+
+      return vim.lsp.rpc.start({
+        "nix", "develop", flake_ref, "-c", "ocamllsp", "--stdio",
+      }, dispatchers, { cwd = project_root })
+    end
+
+    return vim.lsp.rpc.start({ "ocamllsp", "--stdio" }, dispatchers, {
+      cwd = project_root,
+    })
+  end,
+})
+
+vim.lsp.enable({ "cssls", "ts_ls", "astro", "html", "roslyn_ls", "ocamllsp" })
 
 vim.opt.completeopt = { "menuone", "noinsert", "popup" }
 local lsp_group = vim.api.nvim_create_augroup("my-lsp-setup", { clear = true })
