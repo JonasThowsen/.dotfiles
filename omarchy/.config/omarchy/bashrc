@@ -1,0 +1,5 @@
+# Personal Omarchy-specific Bash aliases, exports, and functions.
+# This file is sourced from ~/.bashrc after Omarchy's default Bash configuration.
+
+alias mosh='mosh --no-init'
+alias vim='nvim'
