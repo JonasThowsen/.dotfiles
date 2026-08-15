@@ -19,7 +19,7 @@ vim.lsp.config("ocamllsp", {
       end
 
       return vim.lsp.rpc.start({
-        "nix", "develop", flake_ref, "-c", "ocamllsp", "--stdio",
+        "nix", "develop", "--quiet", flake_ref, "-c", "ocamllsp", "--stdio",
       }, dispatchers, { cwd = project_root })
     end
 
