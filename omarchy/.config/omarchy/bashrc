@@ -3,3 +3,4 @@
 
 alias mosh='mosh --no-init'
 alias vim='nvim'
+alias lg='lazygit'
