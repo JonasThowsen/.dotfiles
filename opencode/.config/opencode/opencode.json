@@ -1,9 +1,22 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "tidewave": {
+    "jomat": {
       "type": "remote",
-      "url": "http://localhost:4000/tidewave/mcp",
+      "url": "https://jomat.no/mcp",
+      "enabled": true
+    },
+    "erp-dev-1": {
+      "type": "remote",
+      "url": "https://dev-1-sirkusagio.tailb61fd1.ts.net/erp/mcp",
+      "headers": {
+        "Authorization": "Bearer {file:/run/user/1000/sirkusagio-mcp/dev1-api-key}"
+      },
+      "enabled": true
+    },
+    "openseo": {
+      "type": "remote",
+      "url": "https://openseo.tailb61fd1.ts.net/mcp",
       "enabled": true
     }
   },
@@ -11,9 +24,24 @@
     "*": "allow",
     "bash": {
       "*": "allow",
-      "rm *": "ask",
-      "git reset *": "ask",
-      "git clean *": "ask",
+      "rm -rf /": "deny",
+      "rm -fr /": "deny",
+      "rm -rf /*": "deny",
+      "rm -fr /*": "deny",
+      "rm -rf --no-preserve-root /": "deny",
+      "rm -rf --no-preserve-root /*": "deny",
+      "rm -rf ~": "deny",
+      "rm -rf ~/": "deny",
+      "rm -rf $HOME": "deny",
+      "mkfs.*": "deny",
+      "dd if=*of=/dev/*": "deny",
+      ":(){:|:&};:": "deny",
+      "chmod -R 000 /": "deny",
+      "chmod -R 000 ~": "deny",
+      "chmod -R 000 $HOME": "deny",
+      "> /dev/sd*": "deny",
+      "mkfs": "deny",
+      "fdisk /dev/*": "deny"
     }
   }
 }
