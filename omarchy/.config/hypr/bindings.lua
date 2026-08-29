@@ -69,6 +69,25 @@ o.bind("CTRL + SHIFT + L", "Shrink window left", hl.dsp.window.resize({ x = 100,
 o.bind("CTRL + SHIFT + K", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
 o.bind("CTRL + SHIFT + J", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
 
+-- Super+R enters a persistent resize mode. Use H/J/K/L or the arrow keys,
+-- then press Escape (or Super+R again) to leave the mode.
+o.bind("SUPER + R", "Resize mode", function()
+  hl.dispatch(hl.dsp.submap("resize"))
+  hl.exec_cmd('notify-send -u low "Resize mode" "Use H/J/K/L or the arrow keys; Escape exits"')
+end)
+hl.define_submap("resize", function()
+  o.bind("ESCAPE", "Exit resize mode", hl.dsp.submap("reset"))
+  o.bind("SUPER + R", "Exit resize mode", hl.dsp.submap("reset"))
+  o.bind("H", "Expand window left", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { repeating = true })
+  o.bind("L", "Shrink window left", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { repeating = true })
+  o.bind("K", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }), { repeating = true })
+  o.bind("J", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }), { repeating = true })
+  o.bind("LEFT", "Expand window left", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { repeating = true })
+  o.bind("RIGHT", "Shrink window left", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { repeating = true })
+  o.bind("UP", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }), { repeating = true })
+  o.bind("DOWN", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }), { repeating = true })
+end)
+
 -- Move tiled windows with Super+Shift+H/J/K/L, matching your preferred Niri keys.
 o.bind("SUPER + SHIFT + H", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
 o.bind("SUPER + SHIFT + J", "Swap window down", hl.dsp.window.swap({ direction = "d" }))
