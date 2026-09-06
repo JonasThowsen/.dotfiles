@@ -29,7 +29,7 @@ vim.lsp.config("ocamllsp", {
   end,
 })
 
-vim.lsp.enable({ "cssls", "ts_ls", "astro", "html", "roslyn_ls", "ocamllsp" })
+vim.lsp.enable({ "cssls", "ts_ls", "astro", "html", "roslyn_ls", "ocamllsp", "clangd" })
 
 vim.opt.completeopt = { "menuone", "noinsert", "popup" }
 local lsp_group = vim.api.nvim_create_augroup("my-lsp-setup", { clear = true })
