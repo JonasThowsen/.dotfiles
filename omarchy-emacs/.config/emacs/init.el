@@ -142,7 +142,9 @@
   :config
   ;; evil-collection handles the rest: evaluating the sexp under the cursor
   ;; in normal state, and vim keys in the REPL, debugger and inspector.
-  (evil-set-initial-state 'slime-repl-mode 'insert))
+  (evil-set-initial-state 'slime-repl-mode 'insert)
+  ;; Record gd in Evil's jump list, so C-o / C-i hop back and forth
+  (evil-add-command-properties #'slime-edit-definition :jump t))
 
 (my-local-leader
   :keymaps 'lisp-mode-map
