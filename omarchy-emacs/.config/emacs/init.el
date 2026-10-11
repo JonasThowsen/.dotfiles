@@ -88,8 +88,11 @@
 ;;; Searching (consult-fd and consult-ripgrep use fd and rg)
 (use-package consult
   :config
-  ;; In-buffer completion (e.g. SLIME symbol completion) through the minibuffer
+  ;; In-buffer completion (e.g. SLY symbol completion) through the minibuffer
   (setq completion-in-region-function #'consult-completion-in-region))
+
+;; TAB indents the line; if it's already indented, TAB completes instead
+(setq tab-always-indent 'complete)
 
 (use-package embark
   :bind ("C-." . embark-act))
@@ -129,37 +132,44 @@
   :keymaps 'magit-mode-map
   "o" 'magit-diff-visit-file-in-new-tab)
 
-;;; Common Lisp / SLIME
-;; SLIME comes from pacman (emacs-slime), not MELPA.
-(use-package slime
-  :ensure nil
-  :load-path "/usr/share/emacs/site-lisp/slime"
-  :commands (slime slime-mode)
+;;; Common Lisp / SLY
+;; SLY comes from MELPA. It turns itself on in lisp-mode buffers.
+(use-package sly
+  :commands (sly)
   :init
   (setq inferior-lisp-program "sbcl")
-  (setq slime-contribs '(slime-fancy))
-  :hook (lisp-mode . slime-mode)
   :config
+  ;; Load the contribs (REPL, etc.) now rather than on first connect,
+  ;; so sly-mrepl is defined before then
+  (sly-setup)
+  ;; Use normal completion-at-point (and so consult) instead of SLY's own
+  ;; completion popup
+  (sly-symbol-completion-mode -1)
   ;; evil-collection handles the rest: evaluating the sexp under the cursor
-  ;; in normal state, and vim keys in the REPL, debugger and inspector.
-  (evil-set-initial-state 'slime-repl-mode 'insert)
+  ;; in normal state, and vim keys in the debugger and inspector.
+  (evil-set-initial-state 'sly-mrepl-mode 'insert)
   ;; Record gd in Evil's jump list, so C-o / C-i hop back and forth
-  (evil-add-command-properties #'slime-edit-definition :jump t))
+  (evil-add-command-properties #'sly-edit-definition :jump t))
+
+(defun sly-mrepl-other-window ()
+  "Show the REPL in a split, or jump to it if it's already visible."
+  (interactive)
+  (sly-mrepl #'pop-to-buffer))
 
 (my-local-leader
   :keymaps 'lisp-mode-map
-  "'" 'slime
-  "e" 'slime-eval-last-expression
-  "d" 'slime-eval-defun
-  "r" 'slime-eval-region
-  "b" 'slime-eval-buffer
-  "c" 'slime-compile-defun
-  "k" 'slime-compile-and-load-file
-  "z" 'slime-switch-to-output-buffer
-  "h" 'slime-describe-symbol
-  "H" 'slime-hyperspec-lookup
-  "m" 'slime-macroexpand-1
-  "gd" 'slime-edit-definition
-  "gb" 'slime-pop-find-definition-stack)
+  "'" 'sly
+  "e" 'sly-eval-last-expression
+  "d" 'sly-eval-defun
+  "r" 'sly-eval-region
+  "b" 'sly-eval-buffer
+  "c" 'sly-compile-defun
+  "k" 'sly-compile-and-load-file
+  "z" 'sly-mrepl
+  "h" 'sly-describe-symbol
+  "H" 'sly-hyperspec-lookup
+  "m" 'sly-macroexpand-1
+  "gd" 'sly-edit-definition
+  "gb" 'sly-pop-find-definition-stack)
 
 ;;; init.el ends here
