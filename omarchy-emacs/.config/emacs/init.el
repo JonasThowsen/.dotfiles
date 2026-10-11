@@ -133,6 +133,17 @@
   :keymaps 'magit-mode-map
   "o" 'magit-diff-visit-file-in-new-tab)
 
+;;; Project environments
+;; A project with an .envrc (for a Nix flake, "use flake") gets its
+;; environment in each of its buffers, and so do the processes started from
+;; them: compile, shells, and SLY's `sbcl', which is then the project's own,
+;; with its libraries. Needs direnv, and nix-direnv to cache the flake's
+;; shell. A new .envrc must be allowed once: M-x envrc-allow.
+(use-package envrc
+  ;; Turned on last, so that its buffer-local environment is set before
+  ;; other modes' hooks start processes.
+  :hook (after-init . envrc-global-mode))
+
 ;;; Lisp editing
 ;; Structural editing for evil: d/c/y/x keep parens balanced, plus sexp
 ;; text objects and motions. Also on in elisp, for editing this file.
@@ -213,25 +224,41 @@
   "C" 'tun-connect)
 
 ;;; Tun
-;; Tun's checkout and its Lisp image live on the dev server. Files open over
-;; TRAMP (/ssh:netcup-dev:~/coding/tun/...), and the server's bin/repl reaches
-;; this machine through the tunnel in ~/.ssh/config (LocalForward 4010).
-;; The repository's docs/emacs.md describes the whole setup.
+;; Tun is a local checkout (~/coding/tun). Its .envrc brings in the flake's
+;; dev shell, so SPC m ' starts its SBCL as in any such project; then
+;; (asdf:load-system "tun/tests") loads it. Agents work in their own checkout
+;; on the dev server and we meet through git. The repository's docs/emacs.md
+;; describes the workflow.
+;;
+;; Fallback: edit the server's checkout over TRAMP
+;; (/ssh:netcup-dev:~/coding/tun/...) and reach its bin/repl through the
+;; tunnel host in ~/.ssh/config (ssh -N netcup-dev-repl), with SPC m C. The
+;; settings below that name the server only take effect then.
 (defvar tun-remote-host "netcup-dev"
-  "The ~/.ssh/config host where Tun's checkout and bin/repl run.")
+  "The ~/.ssh/config host of the dev server, for the TRAMP fallback.")
 
 (defvar tun-repl-port 4010
-  "The local end of the SSH tunnel to bin/repl's Slynk port.")
+  "The Slynk port of bin/repl: local, or the local end of the SSH tunnel.")
 
 (defun tun-connect ()
-  "Connect SLY to bin/repl on the dev server, through the SSH tunnel."
+  "Connect SLY to a bin/repl started in a terminal, or through the tunnel."
   (interactive)
   (sly-connect "localhost" tun-repl-port))
 
+;; consult-fd and consult-ripgrep start a process per search; over TRAMP,
+;; run those over plain SSH instead of through TRAMP's shell. Faster.
+(connection-local-set-profile-variables
+ 'tun-remote-direct-async
+ '((tramp-direct-async-process . t)))
+(connection-local-set-profiles
+ `(:application tramp :machine ,tun-remote-host)
+ 'tun-remote-direct-async)
+
 (with-eval-after-load 'sly-tramp
-  ;; The remote Lisp names its files /home/jonas/coding/tun/..., which here
-  ;; are TRAMP paths. The match is on (machine-instance) of the remote Lisp.
-  ;; This gives the same names you open by hand, so gd reuses open buffers.
+  ;; In the fallback the image names its files /home/jonas/coding/tun/...,
+  ;; which here are TRAMP paths. The match is on the image's
+  ;; (machine-instance), so a local image is unaffected. This gives the same
+  ;; names you open by hand, so gd reuses open buffers.
   (add-to-list 'sly-filename-translations
                (list "^netcup-dev$"
                      (lambda (emacs-filename)
