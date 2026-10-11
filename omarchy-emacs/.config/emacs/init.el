@@ -154,9 +154,14 @@
    '(operators            ; d/c/y/x keep parens balanced
      c-w
      text-objects         ; dix (sexp), daf (defun), dil (list), daS (string), dac (comment)
-     additional-movement  ; H/L = back/forward sexp, ( ) = up a level, [ ] = prev/next paren
+     additional-movement  ; ( ) = up a level, [ ] = prev/next paren, { } see below
      slurp/barf-cp        ; > and < to slurp/barf
-     wrap)))              ; M-( wraps the sexp at point in parens
+     wrap))               ; M-( wraps the sexp at point in parens
+  ;; H and L do what { and } do (in place of back/forward sexp):
+  ;; L = next opening paren, H = previous closing paren
+  (evil-define-key 'motion lispyville-mode-map
+    "L" #'lispyville-next-opening
+    "H" #'lispyville-previous-closing))
 
 ;; Color parens by nesting depth
 (use-package rainbow-delimiters
