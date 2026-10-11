@@ -115,7 +115,8 @@
   "f" 'consult-fd
   "b" 'consult-buffer
   "s" 'consult-ripgrep
-  "i" 'consult-line)
+  "i" 'consult-line
+  "j" 'consult-imenu)
 
 ;;; Magit
 (use-package magit)
@@ -131,6 +132,24 @@
 (my-leader
   :keymaps 'magit-mode-map
   "o" 'magit-diff-visit-file-in-new-tab)
+
+;;; Lisp editing
+;; Structural editing for evil: d/c/y/x keep parens balanced, plus sexp
+;; text objects and motions. Also on in elisp, for editing this file.
+(use-package lispyville
+  :hook ((lisp-mode emacs-lisp-mode) . lispyville-mode)
+  :config
+  (lispyville-set-key-theme
+   '(operators            ; d/c/y/x keep parens balanced
+     c-w
+     text-objects         ; dix (sexp), daf (defun), dil (list), daS (string), dac (comment)
+     additional-movement  ; H/L = back/forward sexp, ( ) = up a level, [ ] = prev/next paren
+     slurp/barf-cp        ; > and < to slurp/barf
+     wrap)))              ; M-( wraps the sexp at point in parens
+
+;; Color parens by nesting depth
+(use-package rainbow-delimiters
+  :hook ((lisp-mode emacs-lisp-mode sly-mrepl-mode) . rainbow-delimiters-mode))
 
 ;;; Common Lisp / SLY
 ;; SLY comes from MELPA. It turns itself on in lisp-mode buffers.
@@ -150,7 +169,26 @@
   ;; in normal state, and vim keys in the debugger and inspector.
   (evil-set-initial-state 'sly-mrepl-mode 'insert)
   ;; Record gd in Evil's jump list, so C-o / C-i hop back and forth
-  (evil-add-command-properties #'sly-edit-definition :jump t))
+  (evil-add-command-properties #'sly-edit-definition :jump t)
+  ;; REPL output is read-only, and text typed right after it inherits that.
+  ;; SLY is supposed to clear this when a program calls READ, but output that
+  ;; arrives late (e.g. a y-or-n-p prompt) misses it, giving "Text is
+  ;; read-only". Always let typed text start fresh after output.
+  (define-advice sly-mrepl--insert-output (:after (&rest _) allow-typing-after-output)
+    (let ((end (marker-position sly-mrepl--output-mark))
+          (inhibit-read-only t))
+      (when (> end (point-min))
+        (put-text-property (1- end) end 'rear-nonsticky t))))
+  ;; Output that arrives while Lisp is still reading can end up after the
+  ;; cursor, leaving it stuck on the (read-only) prompt line. When a program
+  ;; is waiting for input, send typing to the end of the REPL instead.
+  (defun my/sly-mrepl-jump-to-input ()
+    (when (and sly-mrepl--read-mark
+               (eq this-command 'self-insert-command)
+               (< (point) (marker-position (process-mark (sly-mrepl--process)))))
+      (goto-char (point-max))))
+  (add-hook 'sly-mrepl-mode-hook
+            (lambda () (add-hook 'pre-command-hook #'my/sly-mrepl-jump-to-input nil t))))
 
 (defun sly-mrepl-other-window ()
   "Show the REPL in a split, or jump to it if it's already visible."
@@ -166,7 +204,7 @@
   "b" 'sly-eval-buffer
   "c" 'sly-compile-defun
   "k" 'sly-compile-and-load-file
-  "z" 'sly-mrepl
+  "z" 'sly-mrepl-other-window
   "h" 'sly-describe-symbol
   "H" 'sly-hyperspec-lookup
   "m" 'sly-macroexpand-1
