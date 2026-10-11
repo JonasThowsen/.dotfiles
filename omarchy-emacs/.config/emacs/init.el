@@ -176,7 +176,7 @@
   :config
   ;; Load the contribs (REPL, etc.) now rather than on first connect,
   ;; so sly-mrepl is defined before then. sly-tramp translates file names
-  ;; for a Lisp on another machine (see Tun below).
+  ;; for a Lisp on another machine (see "Lisp images on other machines").
   (sly-setup '(sly-fancy sly-tramp))
   ;; Use normal completion-at-point (and so consult) instead of SLY's own
   ;; completion popup
@@ -226,63 +226,38 @@
   "m" 'sly-macroexpand-1
   "gd" 'sly-edit-definition
   "gb" 'sly-pop-find-definition-stack
-  "C" 'tun-connect)
+  "C" 'sly-connect)
 
-;;; Tun
-;; Tun is a local checkout (~/coding/tun). Its .envrc brings in the flake's
-;; dev shell, so SPC m ' starts its SBCL as in any such project; then
-;; (asdf:load-system "tun/tests") loads it. Agents work in their own checkout
-;; on the dev server and we meet through git. The repository's docs/emacs.md
-;; describes the workflow.
-;;
-;; Fallback: edit the server's checkout over TRAMP
-;; (/ssh:netcup-dev:~/coding/tun/...) and reach its bin/repl through the
-;; tunnel host in ~/.ssh/config (ssh -N netcup-dev-repl), with SPC m C. The
-;; settings below that name the server only take effect then.
-(defvar tun-remote-host "netcup-dev"
-  "The ~/.ssh/config host of the dev server, for the TRAMP fallback.")
+;;; Lisp images on other machines
+;; A project checked out on a server and edited over TRAMP (/ssh:HOST:...),
+;; with its Lisp image's Slynk port forwarded here by SSH; SPC m C connects.
+(defvar my/sly-ssh-hosts '("netcup-dev")
+  "The ~/.ssh/config hosts whose Lisp images SLY reaches through a tunnel.
+Each name must also be the host's (machine-instance), which is how SLY
+tells where an image runs.")
 
-(defvar tun-repl-port 4010
-  "The Slynk port of bin/repl: local, or the local end of the SSH tunnel.")
-
-(defun tun-connect ()
-  "Connect SLY to a bin/repl started in a terminal, or through the tunnel."
-  (interactive)
-  (sly-connect "localhost" tun-repl-port))
+;; Remote projects get their .dir-locals.el too, as local ones do.
+(setq enable-remote-dir-locals t)
 
 ;; consult-fd and consult-ripgrep start a process per search; over TRAMP,
 ;; run those over plain SSH instead of through TRAMP's shell. Faster.
 (connection-local-set-profile-variables
- 'tun-remote-direct-async
+ 'remote-direct-async-process
  '((tramp-direct-async-process . t)))
 (connection-local-set-profiles
- `(:application tramp :machine ,tun-remote-host)
- 'tun-remote-direct-async)
+ '(:application tramp :protocol "ssh")
+ 'remote-direct-async-process)
 
 (with-eval-after-load 'sly-tramp
-  ;; In the fallback the image names its files /home/jonas/coding/tun/...,
-  ;; which here are TRAMP paths. The match is on the image's
-  ;; (machine-instance), so a local image is unaffected. This gives the same
-  ;; names you open by hand, so gd reuses open buffers.
-  (add-to-list 'sly-filename-translations
-               (list "^netcup-dev$"
-                     (lambda (emacs-filename)
-                       (or (file-remote-p emacs-filename 'localname) emacs-filename))
-                     (lambda (lisp-filename)
-                       (concat "/ssh:" tun-remote-host ":" lisp-filename)))))
-
-(defun tun-indentation-setup ()
-  "In a Tun checkout, indent the way the repository's bin/indent does.
-That is Emacs's own `common-lisp-indent-function' with the hints in the
-checkout's scripts/indent.el. SLY's indenter would line up some keyword
-arguments differently, and bin/indent --check would then flag the file."
-  (when-let* ((file (buffer-file-name))
-              (root (locate-dominating-file file "tun.asd")))
-    (unless (featurep 'tun-indent)
-      (load (expand-file-name "scripts/indent.el" root) nil t))
-    (tun-indent-mode-setup)))
-
-;; Depth 90 runs this after SLY's own lisp-mode setup, which it overrides.
-(add-hook 'lisp-mode-hook #'tun-indentation-setup 90)
+  ;; An image on HOST names its files /home/..., which here are the TRAMP
+  ;; names /ssh:HOST:/home/..., the ones you open by hand, so gd reuses open
+  ;; buffers. (sly-tramp's own translator would add user@ to them.)
+  (dolist (host my/sly-ssh-hosts)
+    (add-to-list 'sly-filename-translations
+                 (list (concat "^" (regexp-quote host) "$")
+                       (lambda (emacs-filename)
+                         (or (file-remote-p emacs-filename 'localname) emacs-filename))
+                       (lambda (lisp-filename)
+                         (concat "/ssh:" host ":" lisp-filename))))))
 
 ;;; init.el ends here
