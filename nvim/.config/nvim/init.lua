@@ -87,6 +87,11 @@ vim.opt.undofile = true
 
 vim.opt.scrolloff = 8
 
+-- No display server here, so send "+/"* through the terminal (OSC 52) instead.
+if not (os.getenv('WAYLAND_DISPLAY') or os.getenv('DISPLAY')) then
+  vim.g.clipboard = 'osc52'
+end
+
 -- Keymaps
 vim.keymap.set('x', '<leader>p', [["_dP]])
 

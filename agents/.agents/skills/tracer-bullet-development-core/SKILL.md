@@ -1,5 +1,5 @@
 ---
-name: tracer-bullet-development
+name: tracer-bullet-development-core
 description: Implement features as the smallest useful end-to-end production slice, using tracer-code/tracer-bullet development to validate architecture through working software. Use this skill whenever planning or implementing a feature, product capability, integration, workflow, or uncertain architectural path—even when the user does not explicitly mention tracer bullets. Prefer a thin vertical slice through real boundaries over building complete horizontal layers first.
 ---
 

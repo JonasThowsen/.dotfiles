@@ -14,6 +14,14 @@
       },
       "enabled": true
     },
+    "sirkusagio-staging": {
+      "type": "remote",
+      "url": "https://sirkusagio.jonasnettside.no/erp/mcp",
+      "headers": {
+        "Authorization": "Bearer {file:~/.pi/agent/mcp-keys/sirkusagio-staging.txt}"
+      },
+      "enabled": true
+    },
     "openseo": {
       "type": "remote",
       "url": "https://openseo.tailb61fd1.ts.net/mcp",
