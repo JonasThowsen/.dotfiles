@@ -140,8 +140,9 @@
   (setq inferior-lisp-program "sbcl")
   :config
   ;; Load the contribs (REPL, etc.) now rather than on first connect,
-  ;; so sly-mrepl is defined before then
-  (sly-setup)
+  ;; so sly-mrepl is defined before then. sly-tramp translates file names
+  ;; for a Lisp on another machine (see Tun below).
+  (sly-setup '(sly-fancy sly-tramp))
   ;; Use normal completion-at-point (and so consult) instead of SLY's own
   ;; completion popup
   (sly-symbol-completion-mode -1)
@@ -170,6 +171,48 @@
   "H" 'sly-hyperspec-lookup
   "m" 'sly-macroexpand-1
   "gd" 'sly-edit-definition
-  "gb" 'sly-pop-find-definition-stack)
+  "gb" 'sly-pop-find-definition-stack
+  "C" 'tun-connect)
+
+;;; Tun
+;; Tun's checkout and its Lisp image live on the dev server. Files open over
+;; TRAMP (/ssh:netcup-dev:~/coding/tun/...), and the server's bin/repl reaches
+;; this machine through the tunnel in ~/.ssh/config (LocalForward 4010).
+;; The repository's docs/emacs.md describes the whole setup.
+(defvar tun-remote-host "netcup-dev"
+  "The ~/.ssh/config host where Tun's checkout and bin/repl run.")
+
+(defvar tun-repl-port 4010
+  "The local end of the SSH tunnel to bin/repl's Slynk port.")
+
+(defun tun-connect ()
+  "Connect SLY to bin/repl on the dev server, through the SSH tunnel."
+  (interactive)
+  (sly-connect "localhost" tun-repl-port))
+
+(with-eval-after-load 'sly-tramp
+  ;; The remote Lisp names its files /home/jonas/coding/tun/..., which here
+  ;; are TRAMP paths. The match is on (machine-instance) of the remote Lisp.
+  ;; This gives the same names you open by hand, so gd reuses open buffers.
+  (add-to-list 'sly-filename-translations
+               (list "^netcup-dev$"
+                     (lambda (emacs-filename)
+                       (or (file-remote-p emacs-filename 'localname) emacs-filename))
+                     (lambda (lisp-filename)
+                       (concat "/ssh:" tun-remote-host ":" lisp-filename)))))
+
+(defun tun-indentation-setup ()
+  "In a Tun checkout, indent the way the repository's bin/indent does.
+That is Emacs's own `common-lisp-indent-function' with the hints in the
+checkout's scripts/indent.el. SLY's indenter would line up some keyword
+arguments differently, and bin/indent --check would then flag the file."
+  (when-let* ((file (buffer-file-name))
+              (root (locate-dominating-file file "tun.asd")))
+    (unless (featurep 'tun-indent)
+      (load (expand-file-name "scripts/indent.el" root) nil t))
+    (tun-indent-mode-setup)))
+
+;; Depth 90 runs this after SLY's own lisp-mode setup, which it overrides.
+(add-hook 'lisp-mode-hook #'tun-indentation-setup 90)
 
 ;;; init.el ends here
