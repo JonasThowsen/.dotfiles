@@ -30,6 +30,10 @@
 (load custom-file t)
 
 ;;; Look
+;; Let the compositor size the frame in pixels (a tiling Wayland
+;; compositor such as niri gives the window a tile; otherwise pgtk Emacs
+;; keeps its own character-grid size and the frame stays small).
+(setq frame-resize-pixelwise t)
 ;; Omarchy syncs these with its themes; here they are set once.
 (set-frame-font "Iosevka-14" t t)
 (load-theme 'modus-vivendi t)
