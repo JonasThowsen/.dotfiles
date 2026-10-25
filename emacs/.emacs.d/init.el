@@ -34,8 +34,10 @@
 ;; compositor such as niri gives the window a tile; otherwise pgtk Emacs
 ;; keeps its own character-grid size and the frame stays small).
 (setq frame-resize-pixelwise t)
-;; Omarchy syncs these with its themes; here they are set once.
-(set-frame-font "Iosevka-14" t t)
+;; Omarchy syncs these with its themes; here they are set once. The font
+;; goes through default-frame-alist so that it also works in the daemon
+;; (services.emacs), where there is no graphical frame at startup.
+(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
 (load-theme 'modus-vivendi t)
 
 ;;; Shells
