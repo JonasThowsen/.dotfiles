@@ -1,1 +1,5 @@
 /nvim/.config/nvim/lua/plugins/dankcolors.lua
+/emacs/.emacs.d/custom.el
+/emacs/.emacs.d/elpa/
+/emacs/.emacs.d/eln-cache/
+/emacs/.emacs.d/tree-sitter/
