@@ -17,6 +17,7 @@
     ],
     "deny": []
   },
+  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -47,5 +48,5 @@
     "typescript-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": false,
-  "model": "sonnet"
+  "tui": "fullscreen"
 }
