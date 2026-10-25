@@ -15,10 +15,6 @@
 (setq make-backup-files nil)
 (global-auto-revert-mode 1)
 
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
 
@@ -30,14 +26,8 @@
 (load custom-file t)
 
 ;;; Look
-;; Let the compositor size the frame in pixels (a tiling Wayland
-;; compositor such as niri gives the window a tile; otherwise pgtk Emacs
-;; keeps its own character-grid size and the frame stays small).
-(setq frame-resize-pixelwise t)
-;; Omarchy syncs these with its themes; here they are set once. The font
-;; goes through default-frame-alist so that it also works in the daemon
-;; (services.emacs), where there is no graphical frame at startup.
-(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
+;; Frame geometry, bars and the font are set in early-init.el, before the
+;; first frame exists. Omarchy syncs the theme; here it is set once.
 (load-theme 'modus-vivendi t)
 
 ;;; Shells
