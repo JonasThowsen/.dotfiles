@@ -48,5 +48,10 @@
     "typescript-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": false,
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  }
 }
