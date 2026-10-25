@@ -264,6 +264,13 @@
                '(python-ts-mode . ("uv" "run" "basedpyright-langserver" "--stdio"))))
 
 ;;; Lisp editing
+;; lispyville is built on lispy, whose MELPA package declares no
+;; dependencies although lispy.el requires these (and avy, above). They
+;; must be installed before lispy is byte-compiled, or every package
+;; after this point fails to install.
+(use-package zoutline)
+(use-package hydra)
+
 ;; Structural editing for evil: d/c/y/x keep parens balanced, plus sexp
 ;; text objects and motions. Also on in elisp, for editing this file.
 (use-package lispyville
