@@ -10,7 +10,7 @@ zoxide init fish | source
 # Refresh stale X11 variables before launching commands so clipboard access keeps
 # working after Xorg restarts on a different display number.
 function __refresh_x11_environment --on-event fish_preexec
-    if not set -q DISPLAY; or xset -display "$DISPLAY" q >/dev/null 2>&1
+    if not set -q DISPLAY; or not command -q xset; or xset -display "$DISPLAY" q >/dev/null 2>&1
         return
     end
 
