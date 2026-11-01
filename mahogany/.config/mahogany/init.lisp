@@ -6,6 +6,9 @@
 
 (in-package :mahogany-user)
 
+;;; Slynk port for runtime development
+(config-system:set-config mh::*slynk-port* 4005)
+
 ;;; Keyboard, the same as in niri: Norwegian layout, Caps Lock is Escape.
 ;;; Several options are separated by commas, e.g. "caps:escape,altwin:menu_win".
 
