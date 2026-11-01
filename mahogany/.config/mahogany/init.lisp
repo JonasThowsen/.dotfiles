@@ -94,26 +94,30 @@ Call on the main thread."
   (hrt:with-main-thread ()
     (mh::run-async (cons "hex" args)
                    (lambda (output code)
-                     (declare (ignore output))
+                     ;; A refusal (Hex not running, not ready, busy) shows
+                     ;; Hex's own message rather than nothing:
                      (unless (eql code 0)
-                       (mh::log-string :warn "hex ~{~A~^ ~} exited ~A" args code))
+                       (let ((message (or (and output (hex-json-string output "message"))
+                                          (format nil "hex ~{~A~^ ~} failed (exit ~A)" args code))))
+                         (mh::log-string :warn "hex ~{~A~^ ~}: ~A" args message)
+                         (mh::toast-message mh::*compositor-state* (format nil "Hex: ~A" message))))
                      (hex-refresh)))))
 
 (mh::defcommand hex-dictation-toggle ()
   (:documentation "Hex: start dictating, or stop and paste")
-  (:method () (hex-run "dictation" "toggle")))
+  (:method () (hex-run "dictation" "toggle" "--json")))
 
 (mh::defcommand hex-dictation-start ()
   (:documentation "Hex: start dictating")
-  (:method () (hex-run "dictation" "start")))
+  (:method () (hex-run "dictation" "start" "--json")))
 
 (mh::defcommand hex-dictation-stop ()
   (:documentation "Hex: stop dictating and paste")
-  (:method () (hex-run "dictation" "stop")))
+  (:method () (hex-run "dictation" "stop" "--json")))
 
 (mh::defcommand hex-dictation-cancel ()
   (:documentation "Hex: discard the recording")
-  (:method () (hex-run "dictation" "cancel")))
+  (:method () (hex-run "dictation" "cancel" "--json")))
 
 (mh::define-keys mh::*top-map*
   "s-z" #'hex-dictation-toggle
@@ -121,15 +125,18 @@ Call on the main thread."
   "s-C-z" #'hex-dictation-stop
   "s-M-z" #'hex-dictation-cancel)
 
-;; The bar: a microphone, red while recording, yellow while transcribing,
-;; crossed out and dimmed while Hex is off or disabled. A click opens Hex's
-;; window (and starts Hex if it isn't running).
+;; The bar: a person speaking (dictation, not a mute switch); a red waveform
+;; while recording; a yellow microphone with a speech bubble while
+;; transcribing; the person dimmed while Hex is off or disabled. Nerd Font
+;; Material Design glyphs. A click opens Hex's window (and starts Hex if it
+;; isn't running).
 (mh::define-mode-line-module :hex (:interval 2
                                    :refresh #'hex-refresh
                                    :on-click (lambda () (hex-run)))
   (let ((module (gethash :hex mh::*mode-line-modules*))
-        (mic (string (code-char #xF036C)))
-        (mic-off (string (code-char #xF036D))))
+        (speaking (string (code-char #xF05CB)))      ; nf-md-account_voice
+        (waveform (string (code-char #xF147D)))      ; nf-md-waveform
+        (speech-to-text (string (code-char #xF050A)))) ; mic with a speech bubble
     (setf (mh::mode-line-module-color module)
           (case *hex-state*
             (:recording (cl-colors2:rgb 0.95 0.3 0.3))
@@ -137,15 +144,17 @@ Call on the main thread."
             ((:off :disabled nil) (cl-colors2:rgb 0.5 0.5 0.5))
             (t nil)))
     (case *hex-state*
-      (:recording (format nil "~A rec" mic))
-      (:transcribing (format nil "~A …" mic))
-      (:idle mic)
-      (t mic-off))))
+      (:recording (format nil "~A rec" waveform))
+      (:transcribing (format nil "~A …" speech-to-text))
+      (t speaking))))
 
 (config-system:set-config mh::*mode-line-segments*
                           '(:groups :title :center :date :clock
                             :fill :hex :network :volume :brightness :battery))
 
 ;; Hex in the background with the session (no window); the NixOS module
-;; installs it without a user service.
-(config-system:set-config mh::*autostart* '(("hex" "start")))
+;; installs it without a user service. restart rather than start: a Hex left
+;; running from an earlier Mahogany (restarted by a rebuild, say) holds a dead
+;; Wayland connection, and start would keep it. restart quits it and opens a
+;; new one in this session, or just opens Hex when none is running.
+(config-system:set-config mh::*autostart* '(("hex" "restart")))
