@@ -30,7 +30,6 @@
 
 ;;; Theme
 (mh::set-theme :gavinok)
-(mh::set-gaps :window 13 :output 7 :border 2)
 
 ;;; Outputs: the laptop screen is scaled 2 from its DPI on its own; the
 ;;; external 4K monitor at 1.5, to the left, as in niri.
