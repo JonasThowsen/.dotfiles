@@ -162,3 +162,13 @@ Call on the main thread."
 ;; Wayland connection, and start would keep it. restart quits it and opens a
 ;; new one in this session, or just opens Hex when none is running.
 (config-system:set-config mh::*autostart* '(("hex" "restart")))
+
+;;; Theme: Gavin Freeborn's StumpWM look (gavinok, built in) with a
+;;; wallpaper of our own. Mahogany wants a PNG; put it in
+;;; ~/.dotfiles/backgrounds/backgrounds/gavinok.png (stowed to
+;;; ~/backgrounds/). Without the file the theme stays plain black.
+;;; Choose the theme with theme-menu (s-C-SPC); it is remembered.
+
+(let ((wallpaper "~/backgrounds/gavinok.png"))
+  (when (probe-file wallpaper)
+    (mh::define-theme :gavinok :from :gavinok :wallpaper wallpaper)))
