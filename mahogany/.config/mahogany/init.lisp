@@ -28,8 +28,11 @@
                           mh::cursor-theme "macOS"
                           mh::cursor-size 24)
 
-;;; Theme
-(mh::set-theme :gavinok)
+;;; Theme: gavinok until another is chosen with the theme menu
+;;; (s-C-SPC, previews as you move), which is then remembered. A
+;;; (mh::set-theme ...) here would pin one and undo that choice at
+;;; every login.
+(config-system:set-config mh::*default-theme* :gavinok)
 
 ;;; Outputs: the laptop screen is scaled 2 from its DPI on its own; the
 ;;; external 4K monitor at 1.5, to the left, as in niri.
