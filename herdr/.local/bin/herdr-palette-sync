@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Rebuild the "commands" mod from Herdr's own command palette (frame/palette),
+# adding our own entries. Run again after a Herdr update to pick up its changes.
+set -euo pipefail
+app="${HERDR_APP_HOME:-$HOME/.config/herdr-app}"
+src="$app/frame/palette"
+dst="$app/mods/commands"
+[ -f "$src/main.js" ] || { echo "no $src/main.js; start Herdr once first" >&2; exit 1; }
+mkdir -p "$dst"
+cp "$src/command.svg" "$dst/" 2>/dev/null || true
+python3 -I - "$src/main.js" "$dst/main.js" <<'PY'
+import sys
+s = open(sys.argv[1]).read()
+anchor = "const NAMED = [\n"
+extra = '  ["mod.open", { name: "tokens" }, "App", "Token usage", "tokens usage claude codex opencode cost"],\n'
+if anchor not in s:
+    sys.exit("palette changed: NAMED list not found")
+s = s.replace(anchor, anchor + extra, 1)
+# Our copy lives in mods/commands, so point its own assets there.
+s = s.replace("frame/palette/", "mods/commands/")
+open(sys.argv[2], "w").write(s)
+PY
+cat > "$dst/mod.json" <<'JSON'
+{ "place": "none", "title": "Commands", "overlay": { "kind": "popup", "at": "top", "offset": 40, "width": 640, "height": 0.6 } }
+JSON
+echo "wrote $dst"
